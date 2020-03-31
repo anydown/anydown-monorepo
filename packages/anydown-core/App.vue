@@ -6,13 +6,14 @@
 </template>
 <script>
 import Anydown from "./components/Anydown.vue";
+import { compile } from "./util/document-compiler";
 
 const example = `
 # anydown
 
 \`\`\`gantt
-123 2020-04-04 2020-04-04
-tersdt 2020-04-06 2020-04-06
+New Task,2020-03-31,2020-03-31
+New Task,2020-03-31,2020-03-31
 \`\`\`
 
 This is Example
