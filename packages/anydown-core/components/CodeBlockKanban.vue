@@ -1,5 +1,8 @@
 <template>
   <div class="kanban">
+    <div v-if="compiled.length === 0" class="kanban__col">
+      <button @click="addColumn">New Column</button>
+    </div>
     <div class="kanban__col" v-for="(col, colIndex) in compiled" :key="colIndex">
       <div class="kanban__col__add" @click="addTask(colIndex)">+</div>
       <div class="kanban__col-title" @dblclick="editTitle(colIndex)">{{col.name}}</div>
@@ -36,6 +39,11 @@
             </form>
           </div>
         </draggable>
+      </div>
+    </div>
+    <div class="addColumnHit">
+      <div class="addColumn" @click="addColumn">
+        <div>+</div>
       </div>
     </div>
   </div>
@@ -76,6 +84,17 @@ export default {
     this.compiled = compiler.compileKanban(this.input);
   },
   methods: {
+    addColumn() {
+      this.compiled.push({
+        name: "New Column",
+        cards: []
+      });
+      this.$emit("change", compiler.serializeKanban(this.compiled));
+    },
+    removeColumn(idx) {
+      this.compiled.splice(idx, 1);
+      this.$emit("change", compiler.serializeKanban(this.compiled));
+    },
     onEnd() {
       this.$emit("change", compiler.serializeKanban(this.compiled));
     },
@@ -136,6 +155,7 @@ export default {
 .kanban {
   display: flex;
   margin: 0 -0.5rem;
+  overflow-x: hidden;
 }
 
 .kanban__col {
@@ -213,5 +233,31 @@ export default {
   min-height: 10rem;
   display: flex;
   flex-direction: column;
+}
+
+.addColumnHit {
+  position: relative;
+  width: 10px;
+}
+.addColumn {
+  transition: all ease 0.2s;
+  color: white;
+  height: 100%;
+  width: 32px;
+  text-align: center;
+  position: absolute;
+  top: 0;
+  right: -24px;
+  opacity: 0.2;
+  background: gray;
+  border-radius: 20px 0 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.addColumnHit:hover .addColumn {
+  right: -4px;
+  opacity: 1;
 }
 </style>
