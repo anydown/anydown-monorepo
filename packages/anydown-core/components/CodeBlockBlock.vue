@@ -8,7 +8,7 @@
     @blur="editorBlur"
     @keydown="globalKeydown"
   >
-    <g v-for="(item, idx) in items" :key="idx" @pointerdown="selectedIndex = idx">
+    <g v-for="(item, idx) in items" :key="idx" @pointerdown="selectItem(idx)">
       <g v-if="item.type === 'box'" :transform="`translate(${item.x}, ${item.y})`">
         <rect
           fill="white"
@@ -18,11 +18,21 @@
           :height="item.height"
           :width="item.width"
         />
-        <foreignObject :height="item.height" :width="item.width" x="0" y="0">
-          <div class="innerText" v-text="item.text" />
+        <foreignObject
+          :height="item.height"
+          :width="item.width"
+          x="0"
+          y="0"
+          v-if="editing !== idx"
+        >
+          <div
+            class="innerText"
+            style="white-space: break-spaces;"
+            v-text="item.text.split('\\n').join('\n')"
+          />
         </foreignObject>
         <rect
-          @dblclick="changeBoxText(item)"
+          @dblclick="changeBoxText(idx)"
           @pointerdown="downHandle($event, item, 'x')"
           @pointerup="upHandle"
           @pointermove="moveHandle($event, item, 'x')"
@@ -32,6 +42,21 @@
           :height="item.height"
           :width="item.width"
         />
+        <foreignObject
+          v-if="editing === idx"
+          :height="item.height"
+          :width="item.width"
+          x="0"
+          y="0"
+          style="display: flex;"
+        >
+          <form
+            @submit.prevent="endEditing(idx)"
+            style="height: 100%;margin: 0; display: flex; flex: 1;"
+          >
+            <textarea class="box-input" v-model="editingText" @blur="endEditing(idx)" />
+          </form>
+        </foreignObject>
       </g>
 
       <g
@@ -229,6 +254,12 @@ export default {
     input: String
   },
   methods: {
+    selectItem(idx) {
+      if (this.editing >= 0) {
+        return;
+      }
+      this.selectedIndex = idx;
+    },
     downArrow(ev, item, x, y) {
       this.createArrowPos = {
         x1: item.x + x,
@@ -395,12 +426,22 @@ export default {
       this.selectedIndex = this.items.length - 1;
       this.$emit("change", this.stringData);
     },
-    changeBoxText(item) {
-      const text = window.prompt("テキスト入力", item.text);
-      if (text) {
-        item.text = text;
-      }
+    changeBoxText(idx) {
+      const text = this.items[idx].text;
+      this.editingText = text.split("\\n").join("\n");
+      this.editing = idx;
+      this.$nextTick(() => {
+        const el = this.$el.querySelector(".box-input");
+        if (el) {
+          el.focus();
+          el.setSelectionRange(0, el.value.length);
+        }
+      });
+    },
+    endEditing(idx) {
+      this.items[idx].text = this.editingText.split("\n").join("\\n");
       this.$emit("change", this.stringData);
+      this.editing = -1;
     },
     updateData(input) {
       let data = this.input
@@ -502,7 +543,9 @@ export default {
         y: 0
       },
       selectedIndex: -1,
-      items: []
+      items: [],
+      editing: -1,
+      editingText: ""
     };
   },
   mounted() {
@@ -526,5 +569,10 @@ svg {
 .innerText {
   margin: 0.5rem;
   pointer-events: none;
+}
+.box-input {
+  font-size: inherit;
+  flex: 1;
+  margin: 0.5rem;
 }
 </style>
