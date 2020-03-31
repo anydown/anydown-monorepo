@@ -4,12 +4,35 @@
       <div class="kanban__col__add" @click="addTask(colIndex)">+</div>
       <div class="kanban__col-title" @dblclick="editTitle(colIndex)">{{col.name}}</div>
       <div class="kanban__wrapper">
-        <draggable v-model="col.cards" :options="{group:'everykanban'}" class="draggable--max" @change="onEnd">
-          <div class="kanban__row" v-for="(card, index) in col.cards" track-by="index" :key="index" @dblclick="startEditing(colIndex, index)">
+        <draggable
+          v-model="col.cards"
+          :options="{group:'everykanban'}"
+          class="draggable--max"
+          @change="onEnd"
+        >
+          <div
+            class="kanban__row"
+            v-for="(card, index) in col.cards"
+            track-by="index"
+            :key="index"
+            @dblclick="startEditing(colIndex, index)"
+          >
             <div class="kanban__row__remove" @click="removeTask(colIndex, index)">×</div>
-            <div class="kanban__row__label" v-if="!(editing && editingCol === colIndex && editingIndex === index)" v-text="card"></div>
-            <form v-if="editing && editingCol === colIndex && editingIndex === index" @submit.prevent="endEditingAndNew(colIndex, index)" style="margin: 0;">
-              <input class="kanban__row__input" v-model="editingText" @blur="endEditing(colIndex, index)" />
+            <div
+              class="kanban__row__label"
+              v-if="!(editing && editingCol === colIndex && editingIndex === index)"
+              v-text="card"
+            ></div>
+            <form
+              v-if="editing && editingCol === colIndex && editingIndex === index"
+              @submit.prevent="endEditingAndNew(colIndex, index)"
+              style="margin: 0;"
+            >
+              <input
+                class="kanban__row__input"
+                v-model="editingText"
+                @blur="endEditing(colIndex, index)"
+              />
             </form>
           </div>
         </draggable>
@@ -142,8 +165,9 @@ export default {
   width: 20px;
   height: 20px;
   background: white;
-  border-radius: 2px;
-  color: #a5e487;
+  border-radius: 4px;
+  border: 1px solid #999;
+  color: forestgreen;
   cursor: pointer;
 }
 
