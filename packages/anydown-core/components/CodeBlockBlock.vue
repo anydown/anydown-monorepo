@@ -25,11 +25,14 @@
           y="0"
           v-if="editing !== idx"
         >
-          <div
-            class="innerText"
-            style="white-space: break-spaces;"
-            v-text="item.text.split('\\n').join('\n')"
-          />
+          <div class="innerText__wrapper" :class="{single: item.text.split('\\n').length === 1}">
+            <div
+              class="innerText"
+              style="white-space: break-spaces;"
+              v-text="item.text.split('\\n').join('\n')"
+              :class="{single: item.text.split('\\n').length === 1}"
+            />
+          </div>
         </foreignObject>
         <rect
           @dblclick="changeBoxText(idx)"
@@ -50,10 +53,7 @@
           y="0"
           style="display: flex;"
         >
-          <form
-            @submit.prevent="endEditing(idx)"
-            style="height: 100%;margin: 0; display: flex; flex: 1;"
-          >
+          <form @submit.prevent="endEditing(idx)" class="box-input__wrapper">
             <textarea class="box-input" v-model="editingText" @blur="endEditing(idx)" />
           </form>
         </foreignObject>
@@ -446,51 +446,28 @@ export default {
     updateData(input) {
       let data = this.input
         .split(/[\r|\n|\r\n]/)
+        .slice(1)
         .filter(item => item.length > 0)
         .map(i => {
-          const m = i.split(" ");
-          if (m[0] === "-") {
-            return {
-              type: "box",
-              text: m[1],
-              x: +m[2],
-              y: +m[3],
-              width: +m[4],
-              height: +m[5]
-            };
-          }
-          if (m[0] === ">") {
+          const p = i.split(",");
+          if (p[0] === "arrow") {
             return {
               type: "line",
-              text: m[1],
-              x1: +m[2],
-              y1: +m[3],
-              x2: +m[4],
-              y2: +m[5]
+              text: p[0],
+              x1: +p[1],
+              y1: +p[2],
+              x2: +p[3],
+              y2: +p[4]
             };
           }
-          // const m = i.match(/- (.+) ([0-9]+) ([0-9]+) ([0-9]+) ([0-9]+)/);
-          // if (m) {
-          //   return {
-          //     type: "box",
-          //     text: m[1],
-          //     x: +m[2],
-          //     y: +m[3],
-          //     width: +m[4],
-          //     height: +m[5]
-          //   };
-          // }
-          // const arrow = i.match(/> (.+) ([0-9]+) ([0-9]+) ([0-9]+) ([0-9]+)/);
-          // if (arrow) {
-          //   return {
-          //     type: "line",
-          //     text: arrow[1],
-          //     x1: +arrow[2],
-          //     y1: +arrow[3],
-          //     x2: +arrow[4],
-          //     y2: +arrow[5]
-          //   };
-          // }
+          return {
+            type: "box",
+            text: p[0],
+            x: +p[1],
+            y: +p[2],
+            width: +p[3],
+            height: +p[4]
+          };
         })
         .filter(item => item);
 
@@ -519,10 +496,10 @@ export default {
       return `${this.items
         .map(i => {
           if (i.type === "box") {
-            return "- " + [i.text, i.x, i.y, i.width, i.height].join(" ");
+            return [i.text, i.x, i.y, i.width, i.height].join(",");
           }
           if (i.type === "line") {
-            return "> " + [i.text, i.x1, i.y1, i.x2, i.y2].join(" ");
+            return ["arrow", i.x1, i.y1, i.x2, i.y2].join(",");
           }
           return "";
         })
@@ -570,9 +547,28 @@ svg {
   margin: 0.5rem;
   pointer-events: none;
 }
+.innerText.single {
+  text-align: center;
+  line-height: 100%;
+  font-weight: 700;
+}
+.innerText__wrapper.single {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
 .box-input {
   font-size: inherit;
   flex: 1;
   margin: 0.5rem;
+}
+
+.box-input__wrapper {
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex: 1;
 }
 </style>
