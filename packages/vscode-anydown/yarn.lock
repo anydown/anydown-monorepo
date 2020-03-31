@@ -2,11 +2,12 @@
 # yarn lockfile v1
 
 
-"@anydown/anydown-core@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@anydown/anydown-core/-/anydown-core-1.0.0.tgz#f149342923df150132c6a4b2d7e51958095d4cf5"
-  integrity sha512-EMEnhNFSsi0Yw/myiCJ83tH+ZTlRgzHQWh8rW8SlDTraRHcuPf5fE3IcgWgT2C1JzfsHxi5kZ/2YsACGqY9rRw==
+"@anydown/anydown-core@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@anydown/anydown-core/-/anydown-core-1.0.2.tgz#b37d0b2582919a63fc6097d90bd82d136f56c074"
+  integrity sha512-rz87oVatKhKWYuJ/KtWSVGc6Zj/AROMrkwDBkW28s9o+WmA8k92rnyeRrH3Jd3JNjitUYdsu4PLyYgmt/tKH8g==
   dependencies:
+    "@anydown/anydown-gantt" "^1.2.0"
     d3-scale "^3.2.1"
     markdown-it "^10.0.0"
     markdown-it-emoji "^1.4.0"
@@ -15,6 +16,15 @@
     vue-hot-reload-api "^2.3.4"
     vue-splitpane "^1.0.6"
     vuedraggable "^2.23.2"
+
+"@anydown/anydown-gantt@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@anydown/anydown-gantt/-/anydown-gantt-1.2.0.tgz#c49d535ebd169b75df5e3dfe9eefb628bd98ef0d"
+  integrity sha512-yk+Jhc2jNmFwEMx2Es/pKKwVXoYgtQKLJChUVI6T/piKZbijeQNDeZr/hWXpMP7hX0goIxOoaL1ATql7Qc4Ypw==
+  dependencies:
+    "@holiday-jp/holiday_jp" "^2.2.3"
+    d3-scale "^3.2.1"
+    vue "^2.6.11"
 
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.5.5":
   version "7.5.5"
@@ -630,6 +640,11 @@
     esutils "^2.0.2"
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
+
+"@holiday-jp/holiday_jp@^2.2.3":
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/@holiday-jp/holiday_jp/-/holiday_jp-2.2.3.tgz#466c4e8302942856b19bc2f1aa1c2f165c6ad271"
+  integrity sha512-/feA+pXrlfmwLHShtT9jRIlgNv/UGBb5v7evdOttHFBHXlugVoz8NEsf1iPKL1DDGfelD0JYHqtgkJO+yGf54Q==
 
 "@iarna/toml@^2.2.0":
   version "2.2.3"
