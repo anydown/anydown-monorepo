@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@anydown/anydown-gantt@^1.1.2":
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/@anydown/anydown-gantt/-/anydown-gantt-1.1.2.tgz#0a54cbf767360d0f6d80dc1d1983e48323e93ac7"
-  integrity sha512-uDya0/Ylm37h76OiMhmgmGORwcOK4nRipr6kn2lVAkFDQCBpsv5RDGKMRxkp6bTW1f4ID7pztWa1ftyBAWPe6Q==
+"@anydown/anydown-gantt@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@anydown/anydown-gantt/-/anydown-gantt-1.2.0.tgz#c49d535ebd169b75df5e3dfe9eefb628bd98ef0d"
+  integrity sha512-yk+Jhc2jNmFwEMx2Es/pKKwVXoYgtQKLJChUVI6T/piKZbijeQNDeZr/hWXpMP7hX0goIxOoaL1ATql7Qc4Ypw==
   dependencies:
     "@holiday-jp/holiday_jp" "^2.2.3"
     d3-scale "^3.2.1"
