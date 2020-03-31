@@ -5,7 +5,20 @@
     </div>
     <div class="kanban__col" v-for="(col, colIndex) in compiled" :key="colIndex">
       <div class="kanban__col__add" @click="addTask(colIndex)">+</div>
-      <div class="kanban__col-title" @dblclick="editTitle(colIndex)">{{col.name}}</div>
+      <div class="kanban__col-title" @dblclick="editTitle(colIndex)">
+        <span v-if="editingTitleCol !== colIndex">{{col.name}}</span>
+        <form
+          v-if="editingTitleCol === colIndex"
+          @submit.prevent="endEditingTitle(colIndex)"
+          style="margin: 0;"
+        >
+          <input
+            class="kanban__col__input"
+            v-model="editingTitleColText"
+            @blur="endEditingTitle(colIndex)"
+          />
+        </form>
+      </div>
       <div class="kanban__wrapper">
         <draggable
           v-model="col.cards"
@@ -23,11 +36,11 @@
             <div class="kanban__row__remove" @click="removeTask(colIndex, index)">×</div>
             <div
               class="kanban__row__label"
-              v-if="!(editing && editingCol === colIndex && editingIndex === index)"
+              v-if="!(editingCol === colIndex && editingIndex === index)"
               v-text="card"
             ></div>
             <form
-              v-if="editing && editingCol === colIndex && editingIndex === index"
+              v-if="editingCol === colIndex && editingIndex === index"
               @submit.prevent="endEditingAndNew(colIndex, index)"
               style="margin: 0;"
             >
@@ -62,9 +75,11 @@ export default {
     return {
       compiled: [],
       editingText: "",
+      editingTitleColText: "",
       editing: false,
-      editingCol: 0,
-      editingIndex: 0
+      editingTitleCol: -1,
+      editingCol: -1,
+      editingIndex: -1
     };
   },
   watch: {
@@ -103,7 +118,6 @@ export default {
       this.editingCol = col;
       this.editingIndex = row;
       this.editingText = oldData;
-      this.editing = true;
       this.$nextTick(() => {
         const el = this.$el.querySelector(".kanban__row__input");
         if (el) {
@@ -112,15 +126,14 @@ export default {
       });
     },
     endEditing(col, row) {
-      this.editing = false;
       if (this.editingText === "") {
-        // this.$nextTick(()=>{
         this.removeTask(col, row);
-        // })
       } else {
         this.$set(this.compiled[col].cards, row, this.editingText);
         this.$emit("change", compiler.serializeKanban(this.compiled));
       }
+      this.editingCol = -1;
+      this.editingIndex = -1;
     },
     endEditingAndNew(col, row) {
       this.endEditing(col, row);
@@ -138,10 +151,24 @@ export default {
       this.$emit("change", compiler.serializeKanban(this.compiled));
     },
     editTitle(col) {
-      const listName = window.prompt("リスト名を変更", this.compiled[col].name);
-      if (listName) {
-        this.compiled[col].name = listName;
+      this.editingTitleCol = col;
+      const oldData = this.compiled[col].name;
+      this.editingTitleColText = oldData;
+      this.$nextTick(() => {
+        const el = this.$el.querySelector(".kanban__col__input");
+        if (el) {
+          el.focus();
+          el.setSelectionRange(0, el.value.length);
+        }
+      });
+    },
+    endEditingTitle(col) {
+      if (this.editingTitleColText === "") {
+        this.editingTitleCol = -1;
+      } else {
+        this.compiled[col].name = this.editingTitleColText;
         this.$emit("change", compiler.serializeKanban(this.compiled));
+        this.editingTitleCol = -1;
       }
     }
   }
