@@ -1,3 +1,8 @@
 # VSCode Anydown Extension
 
-WIP
+https://marketplace.visualstudio.com/items?itemName=hashrock.anydown
+
+# Publish
+
+> vsce package --yarn
+> vsce publish --yarn
