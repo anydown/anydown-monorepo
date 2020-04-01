@@ -1,8 +1,8 @@
 <template>
   <svg
     ref="canv"
-    height="400"
-    width="600"
+    :height="height"
+    :width="width"
     tabindex="0"
     @focus="editorFocus"
     @blur="editorBlur"
@@ -225,7 +225,7 @@
     </g>
 
     <!-- タスク追加 -->
-    <g :transform="`translate(${600 - 24.5}, 5.5)`" @click="addBlock" style="cursor: pointer;">
+    <g :transform="`translate(${width - 24.5}, 5.5)`" @click="addBlock" style="cursor: pointer;">
       <rect fill="white" stroke="#999" x="0" y="0" width="20" height="20" rx="4" ry="4" />
       <line x1="10" x2="10" y1="5" y2="15" stroke="ForestGreen" />
       <line x1="5" x2="15" y1="10" y2="10" stroke="ForestGreen" />
@@ -391,8 +391,15 @@ export default {
         }
       }
     },
+    resizeHeight() {
+      this.height = this.contentsHeight + 60;
+      if (this.height < 400) {
+        this.height = 400;
+      }
+    },
     upHandle(ev) {
       this.dragging = false;
+      this.resizeHeight();
       this.$emit("change", this.stringData);
     },
     downHandle(ev, item, type) {
@@ -472,6 +479,7 @@ export default {
         .filter(item => item);
 
       this.items = data;
+      this.resizeHeight();
     },
     editorFocus() {},
     editorBlur() {
@@ -489,6 +497,16 @@ export default {
     }
   },
   computed: {
+    contentsHeight() {
+      let max = 0;
+      for (const item of this.items) {
+        const len = item.y + item.height;
+        if (len > max) {
+          max = len;
+        }
+      }
+      return max;
+    },
     selectedItem() {
       return this.items[this.selectedIndex];
     },
@@ -522,7 +540,9 @@ export default {
       selectedIndex: -1,
       items: [],
       editing: -1,
-      editingText: ""
+      editingText: "",
+      height: 400,
+      width: 800
     };
   },
   mounted() {
