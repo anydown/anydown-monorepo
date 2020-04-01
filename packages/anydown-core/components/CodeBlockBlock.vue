@@ -392,10 +392,7 @@ export default {
       }
     },
     resizeHeight() {
-      this.height = this.contentsHeight + 60;
-      if (this.height < 400) {
-        this.height = 400;
-      }
+      this.height = Math.ceil(this.contentsHeight / 200) * 200;
     },
     upHandle(ev) {
       this.dragging = false;
@@ -562,6 +559,7 @@ svg {
   user-select: none;
   background: #f0f0f0;
   touch-action: none;
+  transition: height 0.4s ease;
 }
 .innerText {
   margin: 0.5rem;
