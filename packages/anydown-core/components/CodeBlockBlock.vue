@@ -60,7 +60,7 @@
       </g>
 
       <g
-        v-if="item.type === 'line'"
+        v-if="item.type === 'arrow'"
         @pointerdown="downHandle($event, item, '-')"
         @pointerup="upHandle"
         @pointermove="moveHandle($event, item, '-')"
@@ -180,7 +180,7 @@
         />
       </g>
 
-      <g v-if="selectedItem.type === 'line'">
+      <g v-if="selectedItem.type === 'arrow'">
         <line
           style="pointer-events: none;"
           :x1="selectedItem.x1"
@@ -282,7 +282,7 @@ export default {
     },
     upArrow(ev) {
       this.items.push({
-        type: "line",
+        type: "arrow",
         x1: round(this.createArrowPos.x1),
         x2: round(this.createArrowPos.x2),
         y1: round(this.createArrowPos.y1),
@@ -327,14 +327,14 @@ export default {
 
           //Arrow Start
           const affectedStart = this.items
-            .filter(i => i.type === "line")
+            .filter(i => i.type === "arrow")
             .filter(i => {
               return isHit(item, i.x1, i.y1);
             });
           this.moveAffectedLines(affectedStart, nx - item.x, ny - item.y, true);
           //Arrow End
           const affectedEnd = this.items
-            .filter(i => i.type === "line")
+            .filter(i => i.type === "arrow")
             .filter(i => {
               return isHit(item, i.x2, i.y2);
             });
@@ -457,23 +457,23 @@ export default {
         .filter(item => item.length > 0)
         .map(i => {
           const p = i.split(",");
-          if (p[0] === "arrow") {
+          if (p[1] === "arrow") {
             return {
-              type: "line",
               text: p[0],
-              x1: +p[1],
-              y1: +p[2],
-              x2: +p[3],
-              y2: +p[4]
+              type: p[1],
+              x1: +p[2],
+              y1: +p[3],
+              x2: +p[4],
+              y2: +p[5]
             };
           }
           return {
-            type: "box",
             text: p[0],
-            x: +p[1],
-            y: +p[2],
-            width: +p[3],
-            height: +p[4]
+            type: p[1],
+            x: +p[2],
+            y: +p[3],
+            width: +p[4],
+            height: +p[5]
           };
         })
         .filter(item => item);
@@ -514,10 +514,10 @@ export default {
       return `${this.items
         .map(i => {
           if (i.type === "box") {
-            return [i.text, i.x, i.y, i.width, i.height].join(",");
+            return [i.text, i.type, i.x, i.y, i.width, i.height].join(",");
           }
-          if (i.type === "line") {
-            return ["arrow", i.x1, i.y1, i.x2, i.y2].join(",");
+          if (i.type === "arrow") {
+            return [i.text, i.type, i.x1, i.y1, i.x2, i.y2].join(",");
           }
           return "";
         })
