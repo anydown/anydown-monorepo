@@ -392,7 +392,7 @@ export default {
       }
     },
     resizeHeight() {
-      this.height = Math.ceil(this.contentsHeight / 200) * 200;
+      this.height = (Math.floor(this.contentsHeight / 200) + 1) * 200;
     },
     upHandle(ev) {
       this.dragging = false;
