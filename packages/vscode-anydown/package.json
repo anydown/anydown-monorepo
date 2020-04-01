@@ -3,6 +3,7 @@
   "displayName": "AnyDown",
   "description": "",
   "version": "0.1.0",
+  "icon": "icon.png",
   "engines": {
     "vscode": "^1.41.0"
   },
