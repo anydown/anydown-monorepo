@@ -1,6 +1,6 @@
 # anydown-core
 
-> my rad project
+Renderer / Editor of anydown
 
 ## License
 
