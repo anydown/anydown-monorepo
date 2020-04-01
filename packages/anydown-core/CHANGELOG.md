@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.1.1"></a>
+## [1.1.1](https://github.com/anydown/anydown-core/compare/v1.1.0...v1.1.1) (2020-04-01)
+
+
+### Bug Fixes
+
+* **block:** add auto resizing ([4fb50e3](https://github.com/anydown/anydown-core/commit/4fb50e3))
+* **block:** change markup ([18cf784](https://github.com/anydown/anydown-core/commit/18cf784))
+* **block:** fix height when no items ([f33e150](https://github.com/anydown/anydown-core/commit/f33e150))
+* **block:** improve pack behavior ([855b63b](https://github.com/anydown/anydown-core/commit/855b63b))
+
+
+
 <a name="1.1.0"></a>
 # [1.1.0](https://github.com/anydown/anydown-core/compare/v1.0.2...v1.1.0) (2020-03-31)
 
