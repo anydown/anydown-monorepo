@@ -1,5 +1,5 @@
 <template>
-  <div v-html="compiledMarkdown"></div>
+  <div class="markdown-block" v-html="compiledMarkdown"></div>
 </template>
 <script>
 import MarkdownIt from "markdown-it";
@@ -19,4 +19,7 @@ export default {
 };
 </script>
 <style>
+.markdown-block{
+  min-height: 1rem;
+}
 </style>
