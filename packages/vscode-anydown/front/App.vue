@@ -1,17 +1,12 @@
 <template>
   <div>
     <anydown :blocks="splited" @change="updateBlock($event)"></anydown>
-    <div>
-      <span class="label-add">
-        Add
-      </span>
-      
+    <div class="add-nav">
       <button class="add" @click="addKanban">Kanban</button>
       <button class="add" @click="addGantt">Gantt</button>
       <button class="add" @click="addBlock">BlockDiag</button>
       <button class="add" @click="addCsv">SpreadSheet</button>
     </div>
-
   </div>
 </template>
 <style>
@@ -20,18 +15,19 @@ body{
   color: black;
   font-size: 16px;
 }
-.label-add{
-  color: #499be3;
-  font-size: 0.8rem;
+button.add {
+  border: 1px solid #71bdff;
+  padding: 0.4rem 0.5rem;
+  border-radius: 0.2rem;
+  background: white;
+  cursor: pointer;
 }
-button.add{
-  border: none;
-  border-radius: 2rem;
-  background: #DDD;
-  font-weight: 700;
+button.add:hover {
+  background: #eee;
 }
-button.add:hover{
-  background: #AAF;
+.add-nav {
+  margin: 1rem 0;
+  text-align: center;
 }
 </style>
 <script>
