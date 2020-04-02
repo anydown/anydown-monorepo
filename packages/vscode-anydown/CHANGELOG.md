@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.2.0"></a>
+# 0.2.0 (2020-04-02)
+
+
+### Features
+
+* add buttons ([abcb4ac](https://github.com/anydown/vscode-anydown/commit/abcb4ac))
+
+
+
 <a name="0.1.0"></a>
 # [0.1.0](https://github.com/anydown/vscode-anydown/compare/v0.0.2...v0.1.0) (2020-04-01)
 

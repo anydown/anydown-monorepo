@@ -2,7 +2,7 @@
   "name": "anydown",
   "displayName": "Anydown",
   "description": "",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "icon": "icon.png",
   "engines": {
     "vscode": "^1.41.0"
@@ -75,7 +75,7 @@
     "vue-template-compiler": "^2.6.11"
   },
   "dependencies": {
-    "@anydown/anydown-core": "^1.1.1",
+    "@anydown/anydown-core": "^1.1.3",
     "d3-scale": "^3.2.1",
     "vue": "^2.6.11",
     "vue-hot-reload-api": "^2.3.4"
