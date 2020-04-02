@@ -1,1 +1,1 @@
-body{background:#fff;color:#000;font-size:16px}.label-add{color:#499be3;font-size:.8rem}button.add{border:none;border-radius:2rem;background:#ddd;font-weight:700}button.add:hover{background:#aaf}
+body{background:#fff;color:#000;font-size:16px}button.add{border:1px solid #71bdff;padding:.4rem .5rem;border-radius:.2rem;background:#fff;cursor:pointer}button.add:hover{background:#eee}.add-nav{margin:1rem 0;text-align:center}

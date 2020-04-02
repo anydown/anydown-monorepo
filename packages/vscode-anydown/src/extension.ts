@@ -72,8 +72,8 @@ function setListeners(
   context.subscriptions.push(
     vscode.commands.registerCommand("anydown.showPreview", () => {
       const panel = vscode.window.createWebviewPanel(
-        "anyDown", // Identifies
-        "AnyDown", // Title
+        "anydown", // Identifies
+        "Anydown", // Title
         vscode.ViewColumn.Beside,
         {
           localResourceRoots: [
