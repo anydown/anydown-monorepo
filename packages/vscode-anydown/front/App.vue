@@ -53,15 +53,19 @@ export default {
   methods: {
     addKanban(){
       this.input += "\n```kanban\n# TODO\n# DONE\n```\n" 
+      this.apply();
     },
     addGantt(){
       this.input += "\n```gantt\n```\n" 
+      this.apply();
     },
     addBlock(){
       this.input += "\n```block\n\n```\n" 
+      this.apply();
     },
     addCsv(){
       this.input += "\n```csv\n,,,\n,,,\n,,,\n```\n" 
+      this.apply();
     },
     updateBlock(payload) {
       this.splited[payload.id].text = payload.type + "\n" + payload.body;
