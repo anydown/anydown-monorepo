@@ -9,9 +9,21 @@
       @blur="editorBlur"
       @keydown="globalKeydown"
     >
+      <defs>
+        <filter id="dropshadow" x="0" y="0" width="200%" height="200%">
+          <feOffset result="offOut" in="SourceAlpha" dx="3" dy="3" />
+          <feGaussianBlur result="blurOut" in="offOut" stdDeviation="1" />
+          <feComponentTransfer in="blurOut"  result="alphaOut">
+            <feFuncA type="linear" slope="0.5" />
+          </feComponentTransfer>
+          <feBlend in="SourceGraphic" in2="alphaOut" mode="normal" />
+        </filter>
+      </defs>
       <g v-for="(item, idx) in items" :key="idx" @pointerdown="selectItem(idx)">
         <g v-if="item.type === 'box'" :transform="`translate(${item.x}, ${item.y})`">
+          <rect filter="url(#dropshadow)" x="0.5" y="0.5" :height="item.height" :width="item.width" />
           <rect
+            class="item__background"
             fill="white"
             stroke="black"
             x="0.5"
@@ -571,6 +583,9 @@ svg {
   background: #f0f0f0;
   touch-action: none;
   transition: height 0.4s ease;
+}
+.item__background {
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
 }
 .innerText {
   margin: 0.5rem;
