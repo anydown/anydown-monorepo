@@ -4,7 +4,14 @@
       <button @click="addColumn">New Column</button>
     </div>
     <div class="kanban__col" v-for="(col, colIndex) in compiled" :key="colIndex">
-      <div class="kanban__col__add" @click="addTask(colIndex)">+</div>
+      <div class="kanban__col__add" @click="addTask(colIndex)">
+        <svg style="cursor: pointer;" width="20" height="20">
+          <g transform="translate(0.5, 0.5)">
+            <line x1="10" x2="10" y1="5" y2="15" stroke="ForestGreen" />
+            <line x1="5" x2="15" y1="10" y2="10" stroke="ForestGreen" />
+          </g>
+        </svg>
+      </div>
       <div class="kanban__col-title" @dblclick="editTitle(colIndex)">
         <span v-if="editingTitleCol !== colIndex">{{col.name}}</span>
         <form
