@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.1.2"></a>
+## [1.1.2](https://github.com/anydown/anydown-core/compare/v1.1.1...v1.1.2) (2020-04-02)
+
+
+### Bug Fixes
+
+* **block:** add auto width resize ([f3ecda6](https://github.com/anydown/anydown-core/commit/f3ecda6))
+* **block:** add box-shadow ([0eb148c](https://github.com/anydown/anydown-core/commit/0eb148c))
+* **kanban:** change add bottons to svg ([b655250](https://github.com/anydown/anydown-core/commit/b655250))
+
+
+
 <a name="1.1.1"></a>
 ## [1.1.1](https://github.com/anydown/anydown-core/compare/v1.1.0...v1.1.1) (2020-04-01)
 
