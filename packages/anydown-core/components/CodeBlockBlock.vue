@@ -1,236 +1,242 @@
 <template>
-  <svg
-    ref="canv"
-    :height="height"
-    :width="width"
-    tabindex="0"
-    @focus="editorFocus"
-    @blur="editorBlur"
-    @keydown="globalKeydown"
-  >
-    <g v-for="(item, idx) in items" :key="idx" @pointerdown="selectItem(idx)">
-      <g v-if="item.type === 'box'" :transform="`translate(${item.x}, ${item.y})`">
-        <rect
-          fill="white"
-          stroke="black"
-          x="0.5"
-          y="0.5"
-          :height="item.height"
-          :width="item.width"
-        />
-        <foreignObject
-          :height="item.height"
-          :width="item.width"
-          x="0"
-          y="0"
-          v-if="editing !== idx"
-        >
-          <div class="innerText__wrapper" :class="{single: item.text.split('\\n').length === 1}">
-            <div
-              class="innerText"
-              style="white-space: break-spaces;"
-              v-text="item.text.split('\\n').join('\n')"
-              :class="{single: item.text.split('\\n').length === 1}"
-            />
-          </div>
-        </foreignObject>
-        <rect
-          @dblclick="changeBoxText(idx)"
-          @pointerdown="downHandle($event, item, 'x')"
-          @pointerup="upHandle"
-          @pointermove="moveHandle($event, item, 'x')"
-          fill="rgba(255,255,255,0)"
-          x="0.5"
-          y="0.5"
-          :height="item.height"
-          :width="item.width"
-        />
-        <foreignObject
-          v-if="editing === idx"
-          :height="item.height"
-          :width="item.width"
-          x="0"
-          y="0"
-          style="display: flex;"
-        >
-          <form @submit.prevent="endEditing(idx)" class="box-input__wrapper">
-            <textarea class="box-input" v-model="editingText" @blur="endEditing(idx)" />
-          </form>
-        </foreignObject>
-      </g>
-
-      <g
-        v-if="item.type === 'arrow'"
-        @pointerdown="downHandle($event, item, '-')"
-        @pointerup="upHandle"
-        @pointermove="moveHandle($event, item, '-')"
-      >
-        <line
-          :x1="item.x1"
-          :x2="item.x2"
-          :y1="item.y1"
-          :y2="item.y2"
-          stroke="rgba(0,0,0,0)"
-          stroke-width="10"
-        />
-        <line :x1="item.x1" :x2="item.x2" :y1="item.y1" :y2="item.y2" stroke="black" />
-        <g style="pointer-events: none;" :transform="`translate(${item.x2}, ${item.y2})`">
-          <g
-            :transform="`rotate(${Math.atan2(item.y2 - item.y1, item.x2 - item.x1) / 2 / Math.PI * 360})`"
+  <div>
+    <svg
+      ref="canv"
+      :height="svgHeight"
+      :width="svgWidth"
+      tabindex="0"
+      @focus="editorFocus"
+      @blur="editorBlur"
+      @keydown="globalKeydown"
+    >
+      <g v-for="(item, idx) in items" :key="idx" @pointerdown="selectItem(idx)">
+        <g v-if="item.type === 'box'" :transform="`translate(${item.x}, ${item.y})`">
+          <rect
+            fill="white"
+            stroke="black"
+            x="0.5"
+            y="0.5"
+            :height="item.height"
+            :width="item.width"
+          />
+          <foreignObject
+            :height="item.height"
+            :width="item.width"
+            x="0"
+            y="0"
+            v-if="editing !== idx"
           >
-            <polygon points="0,0 -20,-8 -18,0 -20,8" fill="black" />
+            <div class="innerText__wrapper" :class="{single: item.text.split('\\n').length === 1}">
+              <div
+                class="innerText"
+                style="white-space: break-spaces;"
+                v-text="item.text.split('\\n').join('\n')"
+                :class="{single: item.text.split('\\n').length === 1}"
+              />
+            </div>
+          </foreignObject>
+          <rect
+            @dblclick="changeBoxText(idx)"
+            @pointerdown="downHandle($event, item, 'x')"
+            @pointerup="upHandle"
+            @pointermove="moveHandle($event, item, 'x')"
+            fill="rgba(255,255,255,0)"
+            x="0.5"
+            y="0.5"
+            :height="item.height"
+            :width="item.width"
+          />
+          <foreignObject
+            v-if="editing === idx"
+            :height="item.height"
+            :width="item.width"
+            x="0"
+            y="0"
+            style="display: flex;"
+          >
+            <form @submit.prevent="endEditing(idx)" class="box-input__wrapper">
+              <textarea class="box-input" v-model="editingText" @blur="endEditing(idx)" />
+            </form>
+          </foreignObject>
+        </g>
+
+        <g
+          v-if="item.type === 'arrow'"
+          @pointerdown="downHandle($event, item, '-')"
+          @pointerup="upHandle"
+          @pointermove="moveHandle($event, item, '-')"
+        >
+          <line
+            :x1="item.x1"
+            :x2="item.x2"
+            :y1="item.y1"
+            :y2="item.y2"
+            stroke="rgba(0,0,0,0)"
+            stroke-width="10"
+          />
+          <line :x1="item.x1" :x2="item.x2" :y1="item.y1" :y2="item.y2" stroke="black" />
+          <g style="pointer-events: none;" :transform="`translate(${item.x2}, ${item.y2})`">
+            <g
+              :transform="`rotate(${Math.atan2(item.y2 - item.y1, item.x2 - item.x1) / 2 / Math.PI * 360})`"
+            >
+              <polygon points="0,0 -20,-8 -18,0 -20,8" fill="black" />
+            </g>
           </g>
         </g>
       </g>
-    </g>
 
-    <g v-if="selectedItem">
+      <g v-if="selectedItem">
+        <g
+          v-if="selectedItem.type === 'box'"
+          :transform="`translate(${selectedItem.x}, ${selectedItem.y})`"
+        >
+          <rect
+            fill="none"
+            stroke="green"
+            x="0.5"
+            y="0.5"
+            :height="selectedItem.height"
+            :width="selectedItem.width"
+          />
+          <rect
+            @pointerdown="downHandle($event, selectedItem, 'tl')"
+            @pointerup="upHandle"
+            @pointermove="moveHandle($event, selectedItem, 'tl')"
+            x="-5"
+            y="-5"
+            height="10"
+            width="10"
+            fill="white"
+            stroke="green"
+          />
+          <rect
+            @pointerdown="downHandle($event, selectedItem, 'tl')"
+            @pointerup="upHandle"
+            @pointermove="moveHandle($event, selectedItem, 'tr')"
+            :x="-5 + selectedItem.width"
+            y="-5"
+            height="10"
+            width="10"
+            fill="white"
+            stroke="green"
+          />
+          <rect
+            @pointerdown="downHandle($event, selectedItem, 'dr')"
+            @pointerup="upHandle"
+            @pointermove="moveHandle($event, selectedItem, 'dr')"
+            :x="-5 + selectedItem.width"
+            :y="-5 + selectedItem.height"
+            height="10"
+            width="10"
+            fill="white"
+            stroke="green"
+          />
+          <rect
+            @pointerdown="downHandle($event, selectedItem, 'dl')"
+            @pointerup="upHandle"
+            @pointermove="moveHandle($event, selectedItem, 'dl')"
+            :x="-5"
+            :y="-5 + selectedItem.height"
+            height="10"
+            width="10"
+            fill="white"
+            stroke="green"
+          />
+
+          <circle
+            @pointerdown="downArrow($event, selectedItem, 0, selectedItem.height / 2)"
+            @pointerup="upArrow"
+            @pointermove="moveArrow($event)"
+            :cx="0"
+            :cy="selectedItem.height / 2"
+            r="6"
+            fill="rgba(100,200,100, 0.5)"
+          />
+          <circle
+            @pointerdown="downArrow($event, selectedItem, selectedItem.width, selectedItem.height / 2)"
+            @pointerup="upArrow"
+            @pointermove="moveArrow($event)"
+            :cx="selectedItem.width"
+            :cy="selectedItem.height / 2"
+            r="6"
+            fill="rgba(100,200,100, 0.5)"
+          />
+          <circle
+            @pointerdown="downArrow($event, selectedItem, selectedItem.width / 2, 0)"
+            @pointerup="upArrow"
+            @pointermove="moveArrow($event)"
+            :cx="selectedItem.width / 2"
+            :cy="0"
+            r="6"
+            fill="rgba(100,200,100, 0.5)"
+          />
+          <circle
+            @pointerdown="downArrow($event, selectedItem, selectedItem.width / 2, selectedItem.height)"
+            @pointerup="upArrow"
+            @pointermove="moveArrow($event)"
+            :cx="selectedItem.width / 2"
+            :cy="selectedItem.height"
+            r="6"
+            fill="rgba(100,200,100, 0.5)"
+          />
+        </g>
+
+        <g v-if="selectedItem.type === 'arrow'">
+          <line
+            style="pointer-events: none;"
+            :x1="selectedItem.x1"
+            :x2="selectedItem.x2"
+            :y1="selectedItem.y1"
+            :y2="selectedItem.y2"
+            stroke="green"
+          />
+          <rect
+            @pointerdown="downHandle($event, selectedItem, 's')"
+            @pointerup="upHandle"
+            @pointermove="moveHandle($event, selectedItem, 's')"
+            :x="-5 + selectedItem.x1"
+            :y="-5 + selectedItem.y1"
+            height="10"
+            width="10"
+            fill="white"
+            stroke="green"
+          />
+          <rect
+            @pointerdown="downHandle($event, selectedItem, 'e')"
+            @pointerup="upHandle"
+            @pointermove="moveHandle($event, selectedItem, 'e')"
+            :x="-5 + selectedItem.x2"
+            :y="-5 + selectedItem.y2"
+            height="10"
+            width="10"
+            fill="white"
+            stroke="green"
+          />
+        </g>
+
+        <g v-if="createArrow">
+          <line
+            :x1="createArrowPos.x1"
+            :x2="createArrowPos.x2"
+            :y1="createArrowPos.y1"
+            :y2="createArrowPos.y2"
+            stroke="green"
+          />
+        </g>
+      </g>
+
+      <!-- タスク追加 -->
       <g
-        v-if="selectedItem.type === 'box'"
-        :transform="`translate(${selectedItem.x}, ${selectedItem.y})`"
+        :transform="`translate(${svgWidth - 24.5}, 5.5)`"
+        @click="addBlock"
+        style="cursor: pointer;"
       >
-        <rect
-          fill="none"
-          stroke="green"
-          x="0.5"
-          y="0.5"
-          :height="selectedItem.height"
-          :width="selectedItem.width"
-        />
-        <rect
-          @pointerdown="downHandle($event, selectedItem, 'tl')"
-          @pointerup="upHandle"
-          @pointermove="moveHandle($event, selectedItem, 'tl')"
-          x="-5"
-          y="-5"
-          height="10"
-          width="10"
-          fill="white"
-          stroke="green"
-        />
-        <rect
-          @pointerdown="downHandle($event, selectedItem, 'tl')"
-          @pointerup="upHandle"
-          @pointermove="moveHandle($event, selectedItem, 'tr')"
-          :x="-5 + selectedItem.width"
-          y="-5"
-          height="10"
-          width="10"
-          fill="white"
-          stroke="green"
-        />
-        <rect
-          @pointerdown="downHandle($event, selectedItem, 'dr')"
-          @pointerup="upHandle"
-          @pointermove="moveHandle($event, selectedItem, 'dr')"
-          :x="-5 + selectedItem.width"
-          :y="-5 + selectedItem.height"
-          height="10"
-          width="10"
-          fill="white"
-          stroke="green"
-        />
-        <rect
-          @pointerdown="downHandle($event, selectedItem, 'dl')"
-          @pointerup="upHandle"
-          @pointermove="moveHandle($event, selectedItem, 'dl')"
-          :x="-5"
-          :y="-5 + selectedItem.height"
-          height="10"
-          width="10"
-          fill="white"
-          stroke="green"
-        />
-
-        <circle
-          @pointerdown="downArrow($event, selectedItem, 0, selectedItem.height / 2)"
-          @pointerup="upArrow"
-          @pointermove="moveArrow($event)"
-          :cx="0"
-          :cy="selectedItem.height / 2"
-          r="6"
-          fill="rgba(100,200,100, 0.5)"
-        />
-        <circle
-          @pointerdown="downArrow($event, selectedItem, selectedItem.width, selectedItem.height / 2)"
-          @pointerup="upArrow"
-          @pointermove="moveArrow($event)"
-          :cx="selectedItem.width"
-          :cy="selectedItem.height / 2"
-          r="6"
-          fill="rgba(100,200,100, 0.5)"
-        />
-        <circle
-          @pointerdown="downArrow($event, selectedItem, selectedItem.width / 2, 0)"
-          @pointerup="upArrow"
-          @pointermove="moveArrow($event)"
-          :cx="selectedItem.width / 2"
-          :cy="0"
-          r="6"
-          fill="rgba(100,200,100, 0.5)"
-        />
-        <circle
-          @pointerdown="downArrow($event, selectedItem, selectedItem.width / 2, selectedItem.height)"
-          @pointerup="upArrow"
-          @pointermove="moveArrow($event)"
-          :cx="selectedItem.width / 2"
-          :cy="selectedItem.height"
-          r="6"
-          fill="rgba(100,200,100, 0.5)"
-        />
+        <rect fill="white" stroke="#999" x="0" y="0" width="20" height="20" rx="4" ry="4" />
+        <line x1="10" x2="10" y1="5" y2="15" stroke="ForestGreen" />
+        <line x1="5" x2="15" y1="10" y2="10" stroke="ForestGreen" />
       </g>
-
-      <g v-if="selectedItem.type === 'arrow'">
-        <line
-          style="pointer-events: none;"
-          :x1="selectedItem.x1"
-          :x2="selectedItem.x2"
-          :y1="selectedItem.y1"
-          :y2="selectedItem.y2"
-          stroke="green"
-        />
-        <rect
-          @pointerdown="downHandle($event, selectedItem, 's')"
-          @pointerup="upHandle"
-          @pointermove="moveHandle($event, selectedItem, 's')"
-          :x="-5 + selectedItem.x1"
-          :y="-5 + selectedItem.y1"
-          height="10"
-          width="10"
-          fill="white"
-          stroke="green"
-        />
-        <rect
-          @pointerdown="downHandle($event, selectedItem, 'e')"
-          @pointerup="upHandle"
-          @pointermove="moveHandle($event, selectedItem, 'e')"
-          :x="-5 + selectedItem.x2"
-          :y="-5 + selectedItem.y2"
-          height="10"
-          width="10"
-          fill="white"
-          stroke="green"
-        />
-      </g>
-
-      <g v-if="createArrow">
-        <line
-          :x1="createArrowPos.x1"
-          :x2="createArrowPos.x2"
-          :y1="createArrowPos.y1"
-          :y2="createArrowPos.y2"
-          stroke="green"
-        />
-      </g>
-    </g>
-
-    <!-- タスク追加 -->
-    <g :transform="`translate(${width - 24.5}, 5.5)`" @click="addBlock" style="cursor: pointer;">
-      <rect fill="white" stroke="#999" x="0" y="0" width="20" height="20" rx="4" ry="4" />
-      <line x1="10" x2="10" y1="5" y2="15" stroke="ForestGreen" />
-      <line x1="5" x2="15" y1="10" y2="10" stroke="ForestGreen" />
-    </g>
-  </svg>
+    </svg>
+  </div>
 </template>
 
 <script>
@@ -392,7 +398,7 @@ export default {
       }
     },
     resizeHeight() {
-      this.height = (Math.floor(this.contentsHeight / 200) + 1) * 200;
+      this.svgHeight = (Math.floor(this.contentsHeight / 200) + 1) * 200;
     },
     upHandle(ev) {
       this.dragging = false;
@@ -538,11 +544,16 @@ export default {
       items: [],
       editing: -1,
       editingText: "",
-      height: 400,
-      width: 800
+      svgHeight: 400,
+      svgWidth: 800
     };
   },
   mounted() {
+    window.addEventListener("resize", () => {
+      console.log("resize", this.$el.clientWidth);
+      this.svgWidth = this.$el.clientWidth;
+    });
+    this.svgWidth = this.$el.clientWidth;
     this.updateData(this.input);
   },
   watch: {
