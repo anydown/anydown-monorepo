@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.1.3"></a>
+## [1.1.3](https://github.com/anydown/anydown-core/compare/v1.1.2...v1.1.3) (2020-04-02)
+
+
+### Bug Fixes
+
+* adjust resize animation ([6a62a6b](https://github.com/anydown/anydown-core/commit/6a62a6b))
+
+
+
 <a name="1.1.2"></a>
 ## [1.1.2](https://github.com/anydown/anydown-core/compare/v1.1.1...v1.1.2) (2020-04-02)
 
