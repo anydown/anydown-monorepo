@@ -33,6 +33,7 @@ button.add:hover {
 <script>
 import Anydown from "@anydown/anydown-core"
 import { compile } from "./document-compiler";
+import { debounce } from "./util"
 
 const vscode = acquireVsCodeApi();
 export default {
@@ -72,19 +73,12 @@ export default {
       this.input = this.splited.map(i => i.text).join("```");
       this.apply();
     },
-    update(text){
-      vscode.postMessage({
-        command: "text",
-        text: text
-      });
-
-    },
-    apply() {
+    apply: debounce(function apply() {
       vscode.postMessage({
         command: "text",
         text: this.input
       });
-    }
+    }, 50),
   },
   mounted() {
     window.addEventListener("message", event => {
