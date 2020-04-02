@@ -8,16 +8,12 @@
 import Anydown from "./components/Anydown.vue";
 import { compile } from "./util/document-compiler";
 
-const example = `
-# anydown
+const example = `# anydown
 
 \`\`\`gantt
 New Task,2020-03-31,2020-03-31
 New Task,2020-03-31,2020-03-31
 \`\`\`
-
-This is Example
-
 
 \`\`\`kanban
 # backlog
@@ -42,13 +38,12 @@ item,box,340,260,200,100
 export default {
   data() {
     return {
-      input: example,
-      splited: []
+      input: example
     };
   },
-  watch: {
-    input(val) {
-      this.splited = compile(val);
+  computed: {
+    splited() {
+      return compile(this.input);
     }
   },
   methods: {
