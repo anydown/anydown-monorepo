@@ -556,7 +556,7 @@ export default {
       items: [],
       editing: -1,
       editingText: "",
-      svgHeight: 400,
+      svgHeight: 0,
       svgWidth: 800
     };
   },
