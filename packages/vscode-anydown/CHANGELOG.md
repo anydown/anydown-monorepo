@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.2.2"></a>
+## [0.2.2](https://github.com/anydown/vscode-anydown/compare/v0.2.1...v0.2.2) (2020-04-02)
+
+
+### Bug Fixes
+
+* add debounce at postMessage, fixed kanban dup message bug ([2ee80c1](https://github.com/anydown/vscode-anydown/commit/2ee80c1))
+
+
+
 <a name="0.2.1"></a>
 ## [0.2.1](https://github.com/anydown/vscode-anydown/compare/v0.2.0...v0.2.1) (2020-04-02)
 
