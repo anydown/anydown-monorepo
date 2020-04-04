@@ -1,9 +1,24 @@
 <template>
-  <div class="kanban">
+  <div
+    class="kanban"
+    @blur="onBlur"
+    tabindex="0"
+    @keydown.exact="globalKeydown"
+    @keydown.ctrl.67="onCopy"
+    @keydown.ctrl.86="onPaste"
+    @keydown.ctrl.88="onCut"
+  >
     <div v-if="compiled.length === 0" class="kanban__col">
       <button @click="addColumn">New Column</button>
     </div>
-    <div class="kanban__col" v-for="(col, colIndex) in compiled" :key="colIndex">
+    <div
+      class="kanban__col"
+      v-for="(col, colIndex) in compiled"
+      :key="colIndex"
+      @click.exact="addSelectionCol(colIndex, false)"
+      @click.ctrl="addSelectionCol(colIndex, true)"
+      :class="{selected: isSelectedCol(colIndex)}"
+    >
       <div class="kanban__col__add" @click="addTask(colIndex)">
         <svg style="cursor: pointer;" width="20" height="20">
           <g transform="translate(0.5, 0.5)">
@@ -39,6 +54,9 @@
             track-by="index"
             :key="index"
             @dblclick="startEditing(colIndex, index)"
+            @click.exact.stop="addSelectionCard(colIndex,index, false)"
+            @click.ctrl.stop="addSelectionCard(colIndex, index,true)"
+            :class="{selected: isSelectedCard(colIndex, index)}"
           >
             <div class="kanban__row__remove" @click="removeTask(colIndex, index)">×</div>
             <div
@@ -83,10 +101,12 @@ export default {
       compiled: [],
       editingText: "",
       editingTitleColText: "",
-      editing: false,
       editingTitleCol: -1,
       editingCol: -1,
-      editingIndex: -1
+      editingIndex: -1,
+      selectedCol: [],
+      selectedCards: { col: -1, cards: [] },
+      copied: null
     };
   },
   watch: {
@@ -97,6 +117,13 @@ export default {
   computed: {
     output() {
       this.compiled.join();
+    },
+    editing() {
+      return (
+        this.editingTitleCol >= 0 ||
+        this.editingCol >= 0 ||
+        this.editingIndex >= 0
+      );
     }
   },
   components: {
@@ -106,6 +133,130 @@ export default {
     this.compiled = compiler.compileKanban(this.input);
   },
   methods: {
+    globalKeydown(ev) {
+      if (ev.key === "Delete") {
+        this.onRemove();
+      }
+    },
+    onBlur() {
+      this.selectedCol = [];
+    },
+    onRemove() {
+      for (var i = this.selectedCol.length; i > 0; i--) {
+        this.removeColumn(this.selectedCol[i - 1]);
+      }
+      if (this.selectedCards.col >= 0) {
+        for (var i = this.selectedCards.cards.length; i > 0; i--) {
+          this.removeTask(
+            this.selectedCards.col,
+            this.selectedCards.cards[i - 1]
+          );
+        }
+      }
+      this.selectedCol = [];
+      this.selectedCards = { col: -1, cards: [] };
+    },
+    onCut() {
+      if (this.editing) {
+        return;
+      }
+      this.onCopy();
+      this.onRemove();
+    },
+    onCopy() {
+      if (this.editing) {
+        return;
+      }
+      if (this.selectedCol.length > 0) {
+        const copied = this.compiled.filter((i, idx) => {
+          return this.selectedCol.indexOf(idx) >= 0;
+        });
+        this.copied = {
+          type: "column",
+          data: JSON.parse(JSON.stringify(copied))
+        };
+      }
+      if (this.selectedCards.col >= 0) {
+        const copied = this.compiled[this.selectedCards.col].cards.filter(
+          (i, idx) => {
+            return this.selectedCards.cards.indexOf(idx) >= 0;
+          }
+        );
+        this.copied = {
+          type: "cards",
+          data: JSON.parse(JSON.stringify(copied))
+        };
+      }
+    },
+    onPaste() {
+      if (this.editing) {
+        return;
+      }
+
+      //カラム選択中
+      if (this.selectedCol.length > 0 && this.copied) {
+        const lastIndex = this.selectedCol[this.selectedCol.length - 1];
+        if (this.copied.type === "column") {
+          this.compiled.splice(lastIndex + 1, 0, ...this.copied.data);
+        }
+        if (this.copied.type === "cards") {
+          const selectedColumnChildren = this.compiled[lastIndex].cards;
+          selectedColumnChildren.splice(
+            selectedColumnChildren.length,
+            0,
+            ...this.copied.data
+          );
+        }
+
+        this.$emit("change", compiler.serializeKanban(this.compiled));
+      }
+
+      //カード選択中
+      if (
+        this.selectedCards.col >= 0 &&
+        this.copied &&
+        this.copied.type === "cards"
+      ) {
+        const lastIndex = this.selectedCards.cards[
+          this.selectedCards.cards.length - 1
+        ];
+        this.compiled[this.selectedCards.col].cards.splice(
+          lastIndex + 1,
+          0,
+          ...this.copied.data
+        );
+        this.$emit("change", compiler.serializeKanban(this.compiled));
+      }
+    },
+    addSelectionCol(col, multiple) {
+      this.selectedCards = {
+        col: -1,
+        cards: []
+      };
+      if (!multiple) {
+        this.selectedCol = [];
+      }
+      this.selectedCol.push(col);
+      this.selectedCol.sort();
+    },
+    isSelectedCol(selectedCol) {
+      return this.selectedCol.indexOf(selectedCol) >= 0;
+    },
+    isSelectedCard(selectedCol, cardIndex) {
+      return (
+        this.selectedCards.col === selectedCol &&
+        this.selectedCards.cards.indexOf(cardIndex) >= 0
+      );
+    },
+    addSelectionCard(col, card, multiple) {
+      this.selectedCol = [];
+      if (!multiple) {
+        this.selectedCards.cards = [];
+      }
+      this.selectedCards.col = col;
+      this.selectedCards.cards.push(card);
+      this.selectedCards.cards.sort();
+    },
     addColumn() {
       this.compiled.push({
         name: "New Column",
@@ -190,6 +341,8 @@ export default {
   display: flex;
   margin: 0 -0.5rem;
   overflow-x: hidden;
+  outline: none;
+  user-select: none;
 }
 
 .kanban__col {
@@ -199,6 +352,11 @@ export default {
   background: #f5f5f5;
   text-align: center;
   position: relative;
+  border: 1px solid #f5f5f5;
+}
+.kanban__col.selected {
+  box-sizing: border-box;
+  border: 1px solid #666;
 }
 
 .kanban__col-title {
@@ -251,6 +409,11 @@ export default {
   line-height: 1.6rem;
   word-break: break-all;
   position: relative;
+  border: 1px solid white;
+  box-sizing: border-box;
+}
+.kanban__row.selected {
+  border: 1px solid #666;
 }
 
 .kanban__row__input {
