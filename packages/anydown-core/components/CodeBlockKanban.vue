@@ -18,6 +18,7 @@
       @change="onEnd"
       style="display: flex; flex: 1; position: relative;"
       handle=".kanban__col-title"
+      ghost-class="ghost"
     >
       <div
         class="kanban__col"
@@ -50,7 +51,13 @@
           </form>
         </div>
         <div class="kanban__wrapper">
-          <draggable v-model="col.cards" group="everykanban" class="draggable--max" @change="onEnd">
+          <draggable
+            v-model="col.cards"
+            group="everykanban"
+            class="draggable--max"
+            @change="onEnd"
+            ghost-class="ghost"
+          >
             <div
               class="kanban__row"
               v-for="(card, index) in col.cards"
@@ -460,5 +467,9 @@ export default {
 .addColumnHit:hover .addColumn {
   right: -4px;
   opacity: 1;
+}
+.ghost {
+  opacity: 0.2;
+  background: ;
 }
 </style>
