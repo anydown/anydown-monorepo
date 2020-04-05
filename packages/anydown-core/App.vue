@@ -127,4 +127,8 @@ body {
   margin: 0;
   height: 100%;
 }
+
+.markdown-body {
+  min-width: 800px;
+}
 </style>
