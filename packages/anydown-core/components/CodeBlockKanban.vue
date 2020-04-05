@@ -11,74 +11,78 @@
     <div v-if="compiled.length === 0" class="kanban__col">
       <button @click="addColumn">New Column</button>
     </div>
-    <div
-      class="kanban__col"
-      v-for="(col, colIndex) in compiled"
-      :key="colIndex"
-      @click.exact="addSelectionCol(colIndex, false)"
-      @click.ctrl="addSelectionCol(colIndex, true)"
-      :class="{selected: isSelectedCol(colIndex)}"
+    <draggable
+      v-if="compiled.length > 0"
+      v-model="compiled"
+      group="everykanbanCol"
+      @change="onEnd"
+      style="display: flex; flex: 1; position: relative;"
+      handle=".kanban__col-title"
     >
-      <div class="kanban__col__add" @click="addTask(colIndex)">
-        <svg style="cursor: pointer;" width="20" height="20">
-          <g transform="translate(0.5, 0.5)">
-            <line x1="10" x2="10" y1="5" y2="15" stroke="ForestGreen" />
-            <line x1="5" x2="15" y1="10" y2="10" stroke="ForestGreen" />
-          </g>
-        </svg>
-      </div>
-      <div class="kanban__col-title" @dblclick="editTitle(colIndex)">
-        <span v-if="editingTitleCol !== colIndex">{{col.name}}</span>
-        <form
-          v-if="editingTitleCol === colIndex"
-          @submit.prevent="endEditingTitle(colIndex)"
-          style="margin: 0;"
-        >
-          <input
-            class="kanban__col__input"
-            v-model="editingTitleColText"
-            @blur="endEditingTitle(colIndex)"
-          />
-        </form>
-      </div>
-      <div class="kanban__wrapper">
-        <draggable
-          v-model="col.cards"
-          group="everykanban"
-          class="draggable--max"
-          @change="onEnd"
-        >
-          <div
-            class="kanban__row"
-            v-for="(card, index) in col.cards"
-            track-by="index"
-            :key="index"
-            @dblclick="startEditing(colIndex, index)"
-            @click.exact.stop="addSelectionCard(colIndex,index, false)"
-            @click.ctrl.stop="addSelectionCard(colIndex, index,true)"
-            :class="{selected: isSelectedCard(colIndex, index)}"
+      <div
+        class="kanban__col"
+        v-for="(col, colIndex) in compiled"
+        :key="colIndex"
+        @click.exact="addSelectionCol(colIndex, false)"
+        @click.ctrl="addSelectionCol(colIndex, true)"
+        :class="{selected: isSelectedCol(colIndex)}"
+      >
+        <div class="kanban__col__add" @click="addTask(colIndex)">
+          <svg style="cursor: pointer;" width="20" height="20">
+            <g transform="translate(0.5, 0.5)">
+              <line x1="10" x2="10" y1="5" y2="15" stroke="ForestGreen" />
+              <line x1="5" x2="15" y1="10" y2="10" stroke="ForestGreen" />
+            </g>
+          </svg>
+        </div>
+        <div class="kanban__col-title" @dblclick="editTitle(colIndex)">
+          <span v-if="editingTitleCol !== colIndex">{{col.name}}</span>
+          <form
+            v-if="editingTitleCol === colIndex"
+            @submit.prevent="endEditingTitle(colIndex)"
+            style="margin: 0;"
           >
-            <div class="kanban__row__remove" @click="removeTask(colIndex, index)">×</div>
+            <input
+              class="kanban__col__input"
+              v-model="editingTitleColText"
+              @blur="endEditingTitle(colIndex)"
+            />
+          </form>
+        </div>
+        <div class="kanban__wrapper">
+          <draggable v-model="col.cards" group="everykanban" class="draggable--max" @change="onEnd">
             <div
-              class="kanban__row__label"
-              v-if="!(editingCol === colIndex && editingIndex === index)"
-              v-text="card"
-            ></div>
-            <form
-              v-if="editingCol === colIndex && editingIndex === index"
-              @submit.prevent="endEditingAndNew(colIndex, index)"
-              style="margin: 0;"
+              class="kanban__row"
+              v-for="(card, index) in col.cards"
+              track-by="index"
+              :key="index"
+              @dblclick="startEditing(colIndex, index)"
+              @click.exact.stop="addSelectionCard(colIndex,index, false)"
+              @click.ctrl.stop="addSelectionCard(colIndex, index,true)"
+              :class="{selected: isSelectedCard(colIndex, index)}"
             >
-              <input
-                class="kanban__row__input"
-                v-model="editingText"
-                @blur="endEditing(colIndex, index)"
-              />
-            </form>
-          </div>
-        </draggable>
+              <div class="kanban__row__remove" @click="removeTask(colIndex, index)">×</div>
+              <div
+                class="kanban__row__label"
+                v-if="!(editingCol === colIndex && editingIndex === index)"
+                v-text="card"
+              ></div>
+              <form
+                v-if="editingCol === colIndex && editingIndex === index"
+                @submit.prevent="endEditingAndNew(colIndex, index)"
+                style="margin: 0;"
+              >
+                <input
+                  class="kanban__row__input"
+                  v-model="editingText"
+                  @blur="endEditing(colIndex, index)"
+                />
+              </form>
+            </div>
+          </draggable>
+        </div>
       </div>
-    </div>
+    </draggable>
     <div class="addColumnHit">
       <div class="addColumn" @click="addColumn">
         <div>+</div>
