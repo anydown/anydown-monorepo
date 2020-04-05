@@ -5,11 +5,13 @@
       <textarea class="contents__input" v-if="mode==='code'" v-model="input" cols="30" rows="10"></textarea>
     </div>
     <div class="nav">
-      <label>
-        <input type="radio" v-model="mode" value="wysiwyg" />WYSIWYG
+      <label class="nav__item">
+        <input class="nav__item__radio" type="radio" v-model="mode" value="wysiwyg" />
+        <div class="nav__item__label">WYSIWYG</div>
       </label>
-      <label>
-        <input type="radio" v-model="mode" value="code" /> Code
+      <label class="nav__item">
+        <input class="nav__item__radio" type="radio" v-model="mode" value="code" />
+        <div class="nav__item__label">Code</div>
       </label>
     </div>
   </div>
@@ -49,7 +51,7 @@ export default {
   data() {
     return {
       input: example,
-      mode: "code"
+      mode: "wysiwyg"
     };
   },
   computed: {
@@ -73,7 +75,6 @@ export default {
   },
   mounted() {
     const params = new URLSearchParams(window.location.search);
-    console.log(params);
     if (params && params.get("data")) {
       this.input = decodeURIComponent(params.get("data"));
     }
@@ -89,6 +90,8 @@ export default {
 .contents {
   flex: 1;
   display: flex;
+  overflow-y: scroll;
+  justify-content: center;
 }
 .nav {
 }
@@ -96,6 +99,28 @@ export default {
   background: #333;
   color: white;
   flex: 1;
+  padding: 0.5em;
+}
+
+.nav {
+  background: #333;
+  display: flex;
+}
+input[type="radio"] {
+  display: none;
+}
+input[type="radio"] + .nav__item__label {
+  transition: all 0.2s ease;
+  background: #ccc;
+  padding: 0.5em 1em;
+  box-sizing: border-box;
+  border-top: 0px solid white;
+  cursor: pointer;
+}
+
+input[type="radio"]:checked + .nav__item__label {
+  background: white;
+  border-top: 2px solid rgb(109, 189, 255);
 }
 
 body {
