@@ -44,7 +44,7 @@
       <div class="kanban__wrapper">
         <draggable
           v-model="col.cards"
-          :options="{group:'everykanban'}"
+          group="everykanban"
           class="draggable--max"
           @change="onEnd"
         >
