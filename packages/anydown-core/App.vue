@@ -1,7 +1,17 @@
 <template>
-  <div>
-    <textarea v-model="input" cols="30" rows="10"></textarea>
-    <anydown :blocks="splited" @change="updateBlock($event)"></anydown>
+  <div class="wrapper">
+    <div class="contents">
+      <anydown v-if="mode==='wysiwyg'" :blocks="splited" @change="updateBlock($event)"></anydown>
+      <textarea class="contents__input" v-if="mode==='code'" v-model="input" cols="30" rows="10"></textarea>
+    </div>
+    <div class="nav">
+      <label>
+        <input type="radio" v-model="mode" value="wysiwyg" />WYSIWYG
+      </label>
+      <label>
+        <input type="radio" v-model="mode" value="code" /> Code
+      </label>
+    </div>
   </div>
 </template>
 <script>
@@ -38,7 +48,8 @@ item,box,340,260,200,100
 export default {
   data() {
     return {
-      input: example
+      input: example,
+      mode: "code"
     };
   },
   computed: {
@@ -52,8 +63,43 @@ export default {
       this.input = this.splited.map(i => i.text).join("```");
     }
   },
+  watch: {
+    input() {
+      history.replaceState("", "", "?data=" + encodeURIComponent(this.input));
+    }
+  },
   components: {
     Anydown
+  },
+  mounted() {
+    const params = new URLSearchParams(window.location.search);
+    console.log(params);
+    if (params && params.get("data")) {
+      this.input = decodeURIComponent(params.get("data"));
+    }
   }
 };
 </script>
+<style>
+.wrapper {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+}
+.contents {
+  flex: 1;
+  display: flex;
+}
+.nav {
+}
+.contents__input {
+  background: #333;
+  color: white;
+  flex: 1;
+}
+
+body {
+  margin: 0;
+  height: 100%;
+}
+</style>
