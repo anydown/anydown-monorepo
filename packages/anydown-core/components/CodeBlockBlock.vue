@@ -13,16 +13,27 @@
         <filter id="dropshadow" x="0" y="0" width="200%" height="200%">
           <feOffset result="offOut" in="SourceAlpha" dx="3" dy="3" />
           <feGaussianBlur result="blurOut" in="offOut" stdDeviation="1" />
-          <feComponentTransfer in="blurOut"  result="alphaOut">
+          <feComponentTransfer in="blurOut" result="alphaOut">
             <feFuncA type="linear" slope="0.5" />
           </feComponentTransfer>
           <feBlend in="SourceGraphic" in2="alphaOut" mode="normal" />
         </filter>
       </defs>
       <g v-for="(item, idx) in items" :key="idx" @pointerdown="selectItem(idx)">
-        <g v-if="item.type === 'box'" :transform="`translate(${item.x}, ${item.y})`">
-          <rect filter="url(#dropshadow)" x="0.5" y="0.5" :height="item.height" :width="item.width" />
+        <g
+          v-if="item.type === 'box' || item.type === 'text'"
+          :transform="`translate(${item.x}, ${item.y})`"
+        >
           <rect
+            v-if="item.type === 'box'"
+            filter="url(#dropshadow)"
+            x="0.5"
+            y="0.5"
+            :height="item.height"
+            :width="item.width"
+          />
+          <rect
+            v-if="item.type === 'box'"
             class="item__background"
             fill="white"
             stroke="black"
@@ -73,7 +84,7 @@
         </g>
 
         <g
-          v-if="item.type === 'arrow'"
+          v-if="item.type === 'arrow' || item.type === 'line'"
           @pointerdown="downHandle($event, item, '-')"
           @pointerup="upHandle"
           @pointermove="moveHandle($event, item, '-')"
@@ -87,7 +98,11 @@
             stroke-width="10"
           />
           <line :x1="item.x1" :x2="item.x2" :y1="item.y1" :y2="item.y2" stroke="black" />
-          <g style="pointer-events: none;" :transform="`translate(${item.x2}, ${item.y2})`">
+          <g
+            v-if="item.type === 'arrow'"
+            style="pointer-events: none;"
+            :transform="`translate(${item.x2}, ${item.y2})`"
+          >
             <g
               :transform="`rotate(${Math.atan2(item.y2 - item.y1, item.x2 - item.x1) / 2 / Math.PI * 360})`"
             >
@@ -99,7 +114,7 @@
 
       <g v-if="selectedItem">
         <g
-          v-if="selectedItem.type === 'box'"
+          v-if="selectedItem.type === 'box' || selectedItem.type === 'text' "
           :transform="`translate(${selectedItem.x}, ${selectedItem.y})`"
         >
           <rect
@@ -193,7 +208,7 @@
           />
         </g>
 
-        <g v-if="selectedItem.type === 'arrow'">
+        <g v-if="selectedItem.type === 'arrow' || selectedItem.type === 'line'">
           <line
             style="pointer-events: none;"
             :x1="selectedItem.x1"
@@ -247,11 +262,25 @@
         <line x1="10" x2="10" y1="5" y2="15" stroke="ForestGreen" />
         <line x1="5" x2="15" y1="10" y2="10" stroke="ForestGreen" />
       </g>
+
+      <CodeBlockSelectorBox
+        :transform="typeNavTransform"
+        :selected-item="selectedItem"
+        v-if="selectedItem && (selectedItem.type==='box' || selectedItem.type==='text')"
+      />
+      <CodeBlockSelectorArrow
+        :transform="typeNavTransform"
+        :selected-item="selectedItem"
+        v-if="selectedItem && (selectedItem.type==='arrow' || selectedItem.type==='arrow-end' || selectedItem.type==='arrow-both' || selectedItem.type==='line')"
+      />
     </svg>
   </div>
 </template>
 
 <script>
+import CodeBlockSelectorBox from "./CodeBlockBlockSelectorBox";
+import CodeBlockSelectorArrow from "./CodeBlockBlockSelectorArrow";
+
 const handleSize = 10 / 2;
 
 function isHit(box, x, y) {
@@ -472,7 +501,7 @@ export default {
         .filter(item => item.length > 0)
         .map(i => {
           const p = i.split(",");
-          if (p[1] === "arrow") {
+          if (p[1] === "arrow" || p[1] === "line") {
             return {
               text: p[0],
               type: p[1],
@@ -525,13 +554,46 @@ export default {
     selectedItem() {
       return this.items[this.selectedIndex];
     },
+    selectedBBox() {
+      switch (this.selectedItem.type) {
+        case "box":
+        case "text":
+          return {
+            ...this.selectedItem
+          };
+        case "line":
+        case "arrow":
+        case "arrow-end":
+        case "arrow-both":
+          const x1 = this.selectedItem.x1;
+          const y1 = this.selectedItem.y1;
+          const x2 = this.selectedItem.x2;
+          const y2 = this.selectedItem.y2;
+          const x = x1 < x2 ? x1 : x2;
+          const y = y1 < y2 ? y1 : y2;
+          const width = Math.abs(x1 - x2);
+          const height = Math.abs(y1 - y2);
+
+          return {
+            x,
+            y,
+            width,
+            height
+          };
+      }
+    },
+    typeNavTransform() {
+      return `translate(${this.selectedBBox.x}, ${this.selectedBBox.y +
+        this.selectedBBox.height +
+        12})`;
+    },
     stringData() {
       return `${this.items
         .map(i => {
-          if (i.type === "box") {
+          if (i.type === "box" || i.type === "text") {
             return [i.text, i.type, i.x, i.y, i.width, i.height].join(",");
           }
-          if (i.type === "arrow") {
+          if (i.type === "arrow" || i.type === "line") {
             return [i.text, i.type, i.x1, i.y1, i.x2, i.y2].join(",");
           }
           return "";
@@ -572,6 +634,10 @@ export default {
     input(input) {
       this.updateData(input);
     }
+  },
+  components: {
+    CodeBlockSelectorBox,
+    CodeBlockSelectorArrow
   }
 };
 </script>
