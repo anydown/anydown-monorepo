@@ -84,7 +84,7 @@
         </g>
 
         <g
-          v-if="item.type === 'arrow' || item.type === 'line'"
+          v-if="item.type === 'arrow-start' || item.type === 'arrow-end' || item.type === 'arrow-both' || item.type === 'line'"
           @pointerdown="downHandle($event, item, '-')"
           @pointerup="upHandle"
           @pointermove="moveHandle($event, item, '-')"
@@ -99,15 +99,19 @@
           />
           <line :x1="item.x1" :x2="item.x2" :y1="item.y1" :y2="item.y2" stroke="black" />
           <g
-            v-if="item.type === 'arrow'"
+            v-if="item.type === 'arrow-end' || item.type === 'arrow-both'"
             style="pointer-events: none;"
-            :transform="`translate(${item.x2}, ${item.y2})`"
+            :transform="`translate(${item.x2}, ${item.y2}) rotate(${Math.atan2(item.y2 - item.y1, item.x2 - item.x1) / 2 / Math.PI * 360})`"
           >
-            <g
-              :transform="`rotate(${Math.atan2(item.y2 - item.y1, item.x2 - item.x1) / 2 / Math.PI * 360})`"
-            >
-              <polygon points="0,0 -20,-8 -18,0 -20,8" fill="black" />
-            </g>
+            <polygon points="0,0 -20,-8 -18,0 -20,8" fill="black" />
+          </g>
+
+          <g
+            v-if="item.type === 'arrow-start' || item.type === 'arrow-both'"
+            style="pointer-events: none;"
+            :transform="`translate(${item.x1}, ${item.y1}) rotate(${Math.atan2(item.y1 - item.y2, item.x1 - item.x2) / 2 / Math.PI * 360})`"
+          >
+            <polygon points="0,0 -20,-8 -18,0 -20,8" fill="black" />
           </g>
         </g>
       </g>
@@ -208,7 +212,9 @@
           />
         </g>
 
-        <g v-if="selectedItem.type === 'arrow' || selectedItem.type === 'line'">
+        <g
+          v-if="selectedItem.type === 'arrow-start' ||selectedItem.type === 'arrow-end' || selectedItem.type === 'arrow-both' ||  selectedItem.type === 'line'"
+        >
           <line
             style="pointer-events: none;"
             :x1="selectedItem.x1"
@@ -263,16 +269,31 @@
         <line x1="5" x2="15" y1="10" y2="10" stroke="ForestGreen" />
       </g>
 
-      <CodeBlockSelectorBox
-        :transform="typeNavTransform"
-        :selected-item="selectedItem"
-        v-if="selectedItem && (selectedItem.type==='box' || selectedItem.type==='text')"
-      />
-      <CodeBlockSelectorArrow
-        :transform="typeNavTransform"
-        :selected-item="selectedItem"
-        v-if="selectedItem && (selectedItem.type==='arrow' || selectedItem.type==='arrow-end' || selectedItem.type==='arrow-both' || selectedItem.type==='line')"
-      />
+      <transition name="fade">
+        <CodeBlockSelectorBox
+          :transform="typeNavTransform"
+          :selected-item="selectedItem"
+          v-if="selectedItem && (selectedItem.type==='box' || selectedItem.type==='text')"
+        />
+      </transition>
+      <transition name="fade">
+        <CodeBlockSelectorArrow
+          :transform="typeNavArrowStartTransform"
+          :arrow="markerStart"
+          v-if="selectedItem && (selectedItem.type==='arrow-start' || selectedItem.type==='arrow-end' || selectedItem.type==='arrow-both' || selectedItem.type==='line')"
+          @arrow="markerStart = true"
+          @line="markerStart = false"
+        />
+      </transition>
+      <transition name="fade">
+        <CodeBlockSelectorArrow
+          :transform="typeNavArrowEndTransform"
+          :arrow="markerEnd"
+          v-if="selectedItem && (selectedItem.type==='arrow-start' || selectedItem.type==='arrow-end' || selectedItem.type==='arrow-both' || selectedItem.type==='line')"
+          @arrow="markerEnd = true"
+          @line="markerEnd = false"
+        />
+      </transition>
     </svg>
   </div>
 </template>
@@ -296,9 +317,18 @@ function round(v) {
   return Math.round(v / 10) * 10;
 }
 
+function isLine(type) {
+  return (
+    type === "arrow-start" ||
+    type === "arrow-end" ||
+    type === "arrow-both" ||
+    type === "line"
+  );
+}
+
 export default {
   props: {
-    input: String
+    input: String,
   },
   methods: {
     selectItem(idx) {
@@ -312,7 +342,7 @@ export default {
         x1: item.x + x,
         y1: item.y + y,
         x2: item.x + x,
-        y2: item.y + y
+        y2: item.y + y,
       };
 
       const el = ev.currentTarget;
@@ -329,11 +359,11 @@ export default {
     },
     upArrow(ev) {
       this.items.push({
-        type: "arrow",
+        type: "arrow-end",
         x1: round(this.createArrowPos.x1),
         x2: round(this.createArrowPos.x2),
         y1: round(this.createArrowPos.y1),
-        y2: round(this.createArrowPos.y2)
+        y2: round(this.createArrowPos.y2),
       });
       this.$emit("change", this.stringData);
 
@@ -341,12 +371,12 @@ export default {
     },
     moveAffectedLines(affected, dx, dy, isStart) {
       if (isStart) {
-        affected.forEach(i => {
+        affected.forEach((i) => {
           i.x1 += dx;
           i.y1 += dy;
         });
       } else {
-        affected.forEach(i => {
+        affected.forEach((i) => {
           i.x2 += dx;
           i.y2 += dy;
         });
@@ -374,15 +404,15 @@ export default {
 
           //Arrow Start
           const affectedStart = this.items
-            .filter(i => i.type === "arrow")
-            .filter(i => {
+            .filter((i) => isLine(i.type))
+            .filter((i) => {
               return isHit(item, i.x1, i.y1);
             });
           this.moveAffectedLines(affectedStart, nx - item.x, ny - item.y, true);
           //Arrow End
           const affectedEnd = this.items
-            .filter(i => i.type === "arrow")
-            .filter(i => {
+            .filter((i) => isLine(i.type))
+            .filter((i) => {
               return isHit(item, i.x2, i.y2);
             });
           this.moveAffectedLines(affectedEnd, nx - item.x, ny - item.y, false);
@@ -460,7 +490,7 @@ export default {
     addBlock() {
       let px = 10;
       let py = 10;
-      const boxes = this.items.filter(i => i.type === "box");
+      const boxes = this.items.filter((i) => i.type === "box");
       if (boxes.length > 0) {
         const pitem = boxes[boxes.length - 1];
         px = pitem.x;
@@ -472,7 +502,7 @@ export default {
         y: py,
         width: 200,
         height: 100,
-        text: "item"
+        text: "item",
       });
       this.selectedIndex = this.items.length - 1;
       this.$emit("change", this.stringData);
@@ -498,17 +528,17 @@ export default {
       let data = this.input
         .split(/[\r|\n|\r\n]/)
         .slice(1)
-        .filter(item => item.length > 0)
-        .map(i => {
+        .filter((item) => item.length > 0)
+        .map((i) => {
           const p = i.split(",");
-          if (p[1] === "arrow" || p[1] === "line") {
+          if (isLine(p[1])) {
             return {
               text: p[0],
               type: p[1],
               x1: +p[2],
               y1: +p[3],
               x2: +p[4],
-              y2: +p[5]
+              y2: +p[5],
             };
           }
           return {
@@ -517,10 +547,10 @@ export default {
             x: +p[2],
             y: +p[3],
             width: +p[4],
-            height: +p[5]
+            height: +p[5],
           };
         })
-        .filter(item => item);
+        .filter((item) => item);
 
       this.items = data;
       this.resizeHeight();
@@ -538,9 +568,49 @@ export default {
       if (ev.key === "Delete" && this.selectedItem) {
         this.removeItem(this.selectedIndex);
       }
-    }
+    },
   },
   computed: {
+    markerStart: {
+      get() {
+        return (
+          this.selectedItem.type === "arrow-start" ||
+          this.selectedItem.type === "arrow-both"
+        );
+      },
+      set(val) {
+        if (val && this.markerEnd) {
+          this.selectedItem.type = "arrow-both";
+        } else if (val && !this.markerEnd) {
+          this.selectedItem.type = "arrow-start";
+        } else if (!val && this.markerEnd) {
+          this.selectedItem.type = "arrow-end";
+        } else {
+          this.selectedItem.type = "line";
+        }
+        this.$emit("change", this.stringData);
+      },
+    },
+    markerEnd: {
+      get() {
+        return (
+          this.selectedItem.type === "arrow-end" ||
+          this.selectedItem.type === "arrow-both"
+        );
+      },
+      set(val) {
+        if (val && this.markerStart) {
+          this.selectedItem.type = "arrow-both";
+        } else if (val && !this.markerStart) {
+          this.selectedItem.type = "arrow-end";
+        } else if (!val && this.markerStart) {
+          this.selectedItem.type = "arrow-start";
+        } else {
+          this.selectedItem.type = "line";
+        }
+        this.$emit("change", this.stringData);
+      },
+    },
     contentsHeight() {
       let max = 0;
       for (const item of this.items) {
@@ -559,10 +629,10 @@ export default {
         case "box":
         case "text":
           return {
-            ...this.selectedItem
+            ...this.selectedItem,
           };
         case "line":
-        case "arrow":
+        case "arrow-start":
         case "arrow-end":
         case "arrow-both":
           const x1 = this.selectedItem.x1;
@@ -578,48 +648,58 @@ export default {
             x,
             y,
             width,
-            height
+            height,
           };
       }
     },
     typeNavTransform() {
-      return `translate(${this.selectedBBox.x}, ${this.selectedBBox.y +
-        this.selectedBBox.height +
-        12})`;
+      return `translate(${this.selectedBBox.x}, ${
+        this.selectedBBox.y + this.selectedBBox.height + 12
+      })`;
+    },
+    typeNavArrowStartTransform() {
+      return `translate(${this.selectedItem.x1 - 24}, ${
+        this.selectedItem.y1 + 24
+      })`;
+    },
+    typeNavArrowEndTransform() {
+      return `translate(${this.selectedItem.x2 - 24}, ${
+        this.selectedItem.y2 + 24
+      })`;
     },
     stringData() {
       return `${this.items
-        .map(i => {
+        .map((i) => {
           if (i.type === "box" || i.type === "text") {
             return [i.text, i.type, i.x, i.y, i.width, i.height].join(",");
           }
-          if (i.type === "arrow" || i.type === "line") {
+          if (isLine(i.type)) {
             return [i.text, i.type, i.x1, i.y1, i.x2, i.y2].join(",");
           }
           return "";
         })
         .join("\n")}
 `;
-    }
+    },
   },
   data() {
     return {
       createArrow: false,
       createArrowPos: {
         x: 0,
-        y: 0
+        y: 0,
       },
       dragging: false,
       dragOffset: {
         x: 0,
-        y: 0
+        y: 0,
       },
       selectedIndex: -1,
       items: [],
       editing: -1,
       editingText: "",
       svgHeight: 0,
-      svgWidth: 800
+      svgWidth: 800,
     };
   },
   mounted() {
@@ -633,12 +713,12 @@ export default {
   watch: {
     input(input) {
       this.updateData(input);
-    }
+    },
   },
   components: {
     CodeBlockSelectorBox,
-    CodeBlockSelectorArrow
-  }
+    CodeBlockSelectorArrow,
+  },
 };
 </script>
 
@@ -680,5 +760,16 @@ svg {
   margin: 0;
   display: flex;
   flex: 1;
+}
+
+.fade-enter-active {
+  transition: opacity 0.3s;
+}
+.fade-leave-active {
+  transition: opacity 0.1s;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

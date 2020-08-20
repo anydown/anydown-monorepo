@@ -7,7 +7,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@anydown/anydown-gantt": "^1.3.0",
+    "@anydown/anydown-gantt": "^1.5.0",
     "d3-scale": "^3.2.1",
     "markdown-it": "^10.0.0",
     "markdown-it-emoji": "^1.4.0",
@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "@vue/component-compiler-utils": "^3.1.1",
-    "bili": "^4.8.1",
+    "bili": "^5.0.5",
     "parcel": "^1.12.4",
     "rollup-plugin-vue": "^5.1.5",
     "vue-template-compiler": "^2.6.11"
