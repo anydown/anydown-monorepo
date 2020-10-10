@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.5](https://github.com/anydown/anydown-monorepo/compare/v1.1.4...v1.1.5) (2020-10-10)
+
+
+### Bug Fixes
+
+* add workaround for parcel error, fix import for rollup ([07f1b43](https://github.com/anydown/anydown-monorepo/commit/07f1b430ddf69bcb20d92318f7855de32794393a))
+
 ### [1.1.4](https://github.com/anydown/anydown-monorepo/compare/v0.2.6...v1.1.4) (2020-10-10)
 
 <a name="1.1.3"></a>
