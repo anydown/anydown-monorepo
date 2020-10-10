@@ -306,9 +306,10 @@ export default {
     },
     endEditingAndNew(col, row) {
       this.endEditing(col, row);
-      this.$nextTick(() => {
+      //for VSCode webview hack, I really want to remove this timeout
+      setTimeout(()=>{
         this.addTask(col);
-      });
+      }, 100)
     },
     addTask(col) {
       this.compiled[col].cards.push("");
