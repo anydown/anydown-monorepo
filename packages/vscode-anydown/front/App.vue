@@ -2,15 +2,38 @@
   <div>
     <anydown :blocks="splited" @change="updateBlock($event)"></anydown>
     <div class="add-nav">
-      <button class="add" @click="addKanban">Kanban</button>
-      <button class="add" @click="addGantt">Gantt</button>
-      <button class="add" @click="addBlock">BlockDiag</button>
-      <button class="add" @click="addCsv">SpreadSheet</button>
+      <button class="add" @click="addKanban">
+        <div>
+          <IconKanban />
+        </div>
+        <div class="add__label">Kanban</div>
+      </button>
+      <button class="add" @click="addGantt">
+        <div>
+          <IconGantt />
+        </div>
+
+        <div class="add__label">Gantt</div>
+      </button>
+      <button class="add" @click="addBlock">
+        <div>
+          <IconBlock />
+        </div>
+
+        <div class="add__label">Block</div>
+      </button>
+      <button class="add" @click="addCsv">
+        <div>
+          <IconCsv />
+        </div>
+
+        <div class="add__label">CSV</div>
+      </button>
     </div>
   </div>
 </template>
 <style>
-body{
+body {
   background: white;
   color: black;
   font-size: 16px;
@@ -21,6 +44,14 @@ button.add {
   border-radius: 0.2rem;
   background: white;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1em;
+}
+.add__label {
+  text-align: center;
 }
 button.add:hover {
   background: #eee;
@@ -28,44 +59,54 @@ button.add:hover {
 .add-nav {
   margin: 1rem 0;
   text-align: center;
+  display: flex;
+  justify-content: center;
 }
 </style>
 <script>
-import Anydown from "@anydown/anydown-core"
+import Anydown from "@anydown/anydown-core";
 import { compile } from "./document-compiler";
-import { debounce } from "./util"
+import { debounce } from "./util";
+import IconKanban from "./IconKanban.vue"
+import IconGantt from "./IconGantt.vue"
+import IconBlock from "./IconBlock.vue"
+import IconCsv from "./IconCsv.vue"
 
 const vscode = acquireVsCodeApi();
 export default {
   components: {
-    Anydown
-  },  
+    Anydown,
+    IconKanban,
+    IconGantt,
+    IconBlock,
+    IconCsv
+  },
   data() {
     return {
       input: "",
-      splited: []      
+      splited: [],
     };
   },
   watch: {
     input(val) {
       this.splited = compile(val);
     }
-  },  
+  },
   methods: {
-    addKanban(){
-      this.input += "\n```kanban\n# TODO\n# DONE\n```\n" 
+    addKanban() {
+      this.input += "\n```kanban\n# TODO\n# DONE\n```\n";
       this.apply();
     },
-    addGantt(){
-      this.input += "\n```gantt\n```\n" 
+    addGantt() {
+      this.input += "\n```gantt\n```\n";
       this.apply();
     },
-    addBlock(){
-      this.input += "\n```block\n\n```\n" 
+    addBlock() {
+      this.input += "\n```block\n\n```\n";
       this.apply();
     },
-    addCsv(){
-      this.input += "\n```csv\n,,,\n,,,\n,,,\n```\n" 
+    addCsv() {
+      this.input += "\n```csv\n,,,\n,,,\n,,,\n```\n";
       this.apply();
     },
     updateBlock(payload) {
@@ -78,7 +119,7 @@ export default {
         command: "text",
         text: this.input
       });
-    }, 50),
+    }, 50)
   },
   mounted() {
     window.addEventListener("message", event => {

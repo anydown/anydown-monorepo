@@ -1,0 +1,51 @@
+<template>
+  <svg width="50" height="40" viewBox="0 0 100 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect
+      x="21.5"
+      y="13.5"
+      width="22"
+      height="13"
+      rx="1.5"
+      fill="#7D7D7D"
+      stroke="#7D7D7D"
+      stroke-width="3"
+    />
+    <rect
+      x="62.5"
+      y="54.5"
+      width="18"
+      height="13"
+      rx="1.5"
+      fill="#7D7D7D"
+      stroke="#7D7D7D"
+      stroke-width="3"
+    />
+    <rect
+      x="42.5"
+      y="27.5"
+      width="10"
+      height="13"
+      rx="1.5"
+      fill="#7D7D7D"
+      stroke="#7D7D7D"
+      stroke-width="3"
+    />
+    <rect
+      x="51.5"
+      y="40.5"
+      width="10"
+      height="13"
+      rx="1.5"
+      fill="#7D7D7D"
+      stroke="#7D7D7D"
+      stroke-width="3"
+    />
+  </svg>
+</template>
+
+<script>
+export default {};
+</script>
+
+<style>
+</style>
