@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.6](https://github.com/anydown/anydown-monorepo/compare/v1.1.5...v1.1.6) (2020-10-10)
+
+
+### Bug Fixes
+
+* add es module entry file ([fd1a5f2](https://github.com/anydown/anydown-monorepo/commit/fd1a5f2bfeacf5517df4780f7717b5786a098407))
+* add es module entry file ([0aa5afc](https://github.com/anydown/anydown-monorepo/commit/0aa5afc53f7d0ca6f393136ca0538a8e5d71d324))
+
 ### [1.1.5](https://github.com/anydown/anydown-monorepo/compare/v1.1.4...v1.1.5) (2020-10-10)
 
 
