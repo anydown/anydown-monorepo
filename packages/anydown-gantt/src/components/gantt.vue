@@ -16,11 +16,11 @@
       @keydown.up.exact="selectUp"
       @keydown.down.exact="selectDown"
       @keydown.delete.exact="selectRemove"
-      @keydown.enter="selectEdit"
+      @keydown.enter.exact="selectEdit"
       @blur="onBlur"
     >
       <!-- 全体を32px下げる（日付用余白） -->
-      <g transform="translate(0, 48)">
+      <g transform="translate(0, 48)" class="dateGroup">
         <!-- 背景 -->
         <rect
           class="background"
@@ -30,36 +30,54 @@
           :width="svgWidth"
           :height="tasks.length * 32"
         />
-        <g>
-          <!-- 月 -->
-          <text
-            v-for="(line, index) in lines"
-            :x="line.x + 0.5"
-            y="-28"
-            :key="index"
-            class="labelMonth"
-            text-anchor="start"
-            font-weight="900"
-            font-size="0.8rem"
-            fill="#55a755"
-          >{{line.labelMonth}}</text>
+
+        <g transform="translate(0, -28)">
+          <rect
+            class="dateBackground"
+            :class="{'grabbing': this.dragging === 'date'}"
+            x="0"
+            y="-20"
+            fill="white"
+            :width="svgWidth"
+            height="48"
+            @pointermove="moveDate"
+            @pointerdown="downDate"
+            @pointerup="upDate"
+          />
+
+          <g>
+            <!-- 月 -->
+            <text
+              v-for="(line, index) in lines"
+              :x="line.x + 0.5"
+              y="0"
+              :key="index"
+              class="labelMonth"
+              text-anchor="start"
+              font-weight="900"
+              font-size="0.8rem"
+              fill="#55a755"
+            >{{line.labelMonth}}</text>
+          </g>
+
+          <!-- 本日 -->
+          <rect :x="todayX" fill="#DDF" y="5" width="20" height="20" rx="10" ry="10" />
+
+          <g v-if="!longView">
+            <!-- 日付 -->
+            <text
+              v-for="(line, index) in lines"
+              :x="line.x + 10"
+              y="19"
+              text-anchor="middle"
+              font-size="0.8rem"
+              :fill="line.color"
+              :key="index"
+              class="labelDate"
+            >{{line.label}}</text>
+          </g>
         </g>
 
-        <!-- 本日 -->
-        <rect :x="todayX" fill="#DDF" y="-23" width="20" height="20" rx="10" ry="10" />
-
-        <g v-if="!longView">
-          <!-- 日付 -->
-          <text
-            v-for="(line, index) in lines"
-            :x="line.x + 10"
-            y="-8"
-            text-anchor="middle"
-            font-size="0.8rem"
-            :fill="line.color"
-            :key="index"
-          >{{line.label}}</text>
-        </g>
         <g>
           <!-- 日付区切り線 -->
           <line
@@ -195,7 +213,7 @@ const holiday = require("@holiday-jp/holiday_jp");
 
 export default {
   props: {
-    input: String,
+    input: String
   },
   data() {
     return {
@@ -206,7 +224,7 @@ export default {
       selectedIndex: -1,
       dragOffset: {
         x: 0,
-        y: 0,
+        y: 0
       },
       dragging: "none",
       dragoverIndex: -1,
@@ -214,6 +232,7 @@ export default {
       displayOffset: 0,
       editing: -1,
       editingText: "",
+      old: null
     };
   },
   methods: {
@@ -246,6 +265,26 @@ export default {
             el.focus();
           }
         });
+      }
+    },
+    downDate(e) {
+      const el = e.currentTarget;
+      el.setPointerCapture(e.pointerId);
+      this.dragging = "date";
+      this.dragOffset.x = e.offsetX;
+      this.old = this.displayOffset;
+    },
+    upDate(e) {
+      this.dragging = "none";
+    },
+    moveDate(e) {
+      if (this.dragging === "date") {
+        const diff = e.offsetX - this.dragOffset.x;
+        this.displayOffset =
+          this.old -
+          Math.round(
+            (this.invert(diff) - this.invert(this.old)) / 24 / 60 / 60 / 1000
+          );
       }
     },
     onDrag(e) {
@@ -334,7 +373,7 @@ export default {
       this.tasks.push({
         name: "New Task",
         start: util.getRelativeDate(0).getTime(),
-        end: util.getRelativeDate(1).getTime(),
+        end: util.getRelativeDate(1).getTime()
       });
       this.$emit("change", gantt.serialize(this.tasks));
       this.editTask(this.tasks.length - 1);
@@ -415,12 +454,12 @@ export default {
     },
     onBlur() {
       this.selectedIndex = -1;
-    },
+    }
   },
   watch: {
     input() {
       this.setTasks(this.input);
-    },
+    }
   },
   computed: {
     lines() {
@@ -435,11 +474,11 @@ export default {
       return this.longView
         ? {
             start: 31 * -1 + this.displayOffset,
-            end: 31 * -1 + viewRange + this.displayOffset,
+            end: 31 * -1 + viewRange + this.displayOffset
           }
         : {
             start: -2 + this.displayOffset,
-            end: -2 + viewRange + this.displayOffset,
+            end: -2 + viewRange + this.displayOffset
           };
     },
     draggingItem() {
@@ -451,7 +490,7 @@ export default {
     timeRange() {
       return [
         util.getRelativeDate(this.displayRange.start).getTime(),
-        util.getRelativeDate(this.displayRange.end).getTime(),
+        util.getRelativeDate(this.displayRange.end).getTime()
       ];
     },
     displayRangeLength() {
@@ -465,7 +504,7 @@ export default {
       const reldate = util.getRelativeDate(0);
       const t = ((reldate.getTime() - start) / len) * this.svgWidth;
       return Math.round(t);
-    },
+    }
   },
   mounted() {
     this.setTasks(this.input);
@@ -474,7 +513,7 @@ export default {
       this.svgWidth = this.$el.clientWidth;
     });
     this.svgWidth = this.$el.clientWidth;
-  },
+  }
 };
 
 function generateLineByRange(start, end, displayRange, svgWidth) {
@@ -512,7 +551,7 @@ function generateLineByRange(start, end, displayRange, svgWidth) {
       x: Math.round(t),
       label: reldate.getDate(),
       color: color,
-      labelMonth: monthStr,
+      labelMonth: monthStr
     });
   }
   return lines;
@@ -573,5 +612,18 @@ svg.gantt {
 
 .topNav {
   opacity: 1 !important;
+}
+
+.dateBackground {
+  cursor: grab;
+}
+.dateBackground.grabbing {
+  cursor: grabbing;
+}
+.labelMonth {
+  pointer-events: none;
+}
+.labelDate {
+  pointer-events: none;
 }
 </style>
