@@ -299,8 +299,8 @@
 </template>
 
 <script>
-import CodeBlockSelectorBox from "./CodeBlockBlockSelectorBox";
-import CodeBlockSelectorArrow from "./CodeBlockBlockSelectorArrow";
+import CodeBlockSelectorBox from "./CodeBlockBlockSelectorBox.vue";
+import CodeBlockSelectorArrow from "./CodeBlockBlockSelectorArrow.vue";
 
 const handleSize = 10 / 2;
 
