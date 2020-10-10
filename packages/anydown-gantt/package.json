@@ -15,6 +15,7 @@
     "vue-template-compiler": "^2.6.11"
   },
   "scripts": {
+    "dev": "poi --serve",
     "example:serve": "poi --serve",
     "prepublishOnly": "npm run build",
     "build": "bili",
