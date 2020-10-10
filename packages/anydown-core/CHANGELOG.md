@@ -1,6 +1,8 @@
-# Change Log
+# Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+### [1.1.4](https://github.com/anydown/anydown-monorepo/compare/v0.2.6...v1.1.4) (2020-10-10)
 
 <a name="1.1.3"></a>
 ## [1.1.3](https://github.com/anydown/anydown-core/compare/v1.1.2...v1.1.3) (2020-04-02)
