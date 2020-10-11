@@ -1,6 +1,6 @@
 {
   "name": "@anydown/anydown-core",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "module": "dist/anydown-core.es.js",
   "main": "dist/anydown-core.js",
   "files": [

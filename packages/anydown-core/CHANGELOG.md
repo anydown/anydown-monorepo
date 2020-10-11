@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.7](https://github.com/anydown/anydown-monorepo/compare/v1.6.1...v1.1.7) (2020-10-11)
+
+
+### Bug Fixes
+
+* change bili config to extractCSS true ([8e3d944](https://github.com/anydown/anydown-monorepo/commit/8e3d9443dda7dc052b968e96469d3cca2c516b70))
+
 ### [1.1.6](https://github.com/anydown/anydown-monorepo/compare/v1.1.5...v1.1.6) (2020-10-10)
 
 
