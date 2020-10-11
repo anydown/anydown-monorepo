@@ -13,5 +13,6 @@ module.exports = {
   },
   plugins: {
     vue: true
-  }
+  },
+  bundleNodeModules: true
 };
