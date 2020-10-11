@@ -65,6 +65,8 @@ button.add:hover {
 </style>
 <script>
 import Anydown from "@anydown/anydown-core";
+import "@anydown/anydown-core/dist/anydown-core.es.css"
+
 import { compile } from "./document-compiler";
 import { debounce } from "./util";
 import IconKanban from "./IconKanban.vue"

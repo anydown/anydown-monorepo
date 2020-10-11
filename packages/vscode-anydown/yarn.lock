@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@anydown/anydown-core@^1.1.6":
-  version "1.1.6"
-  resolved "https://registry.yarnpkg.com/@anydown/anydown-core/-/anydown-core-1.1.6.tgz#6a5f2d292245b1175e411721702f913ef2f1860b"
-  integrity sha512-VFsSh0gKXuTLttxqab6Ax+Sa1y0YIOyBMG1gWGHLqdFmu+a+9fC32ub4v42iSsPKB3nlCGCX4ejnoeQ0Xdg7xg==
+"@anydown/anydown-core@^1.1.8":
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/@anydown/anydown-core/-/anydown-core-1.1.8.tgz#e15b133f19fcab8638fec2fde979162659d4ec29"
+  integrity sha512-/GiuVZDnQS/i04Kj5WpBkO63xpul4pTqlXKN5Pv8X7f4JXPzQa0BqSCI570Lk1K6B38gt+RQ3jJfXUwzxyQbEQ==
   dependencies:
     "@anydown/anydown-gantt" "^1.6.0"
     d3-scale "^3.2.1"
