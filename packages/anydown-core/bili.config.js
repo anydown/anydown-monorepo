@@ -9,7 +9,7 @@ module.exports = {
       }
       return "anydown-core.js";
     },
-    extractCSS: false
+    extractCSS: true
   },
   plugins: {
     vue: true
