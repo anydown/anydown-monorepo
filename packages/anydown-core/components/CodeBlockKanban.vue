@@ -404,6 +404,9 @@ export default {
   color: forestgreen;
   cursor: pointer;
 }
+.kanban__col__add:hover {
+  background: #eee;
+}
 
 .kanban__row__remove {
   display: none;
@@ -418,6 +421,9 @@ export default {
   cursor: pointer;
   text-align: center;
   line-height: 20px;
+}
+.kanban__row__remove:hover {
+  color: #ff3333;
 }
 
 .kanban__row {
