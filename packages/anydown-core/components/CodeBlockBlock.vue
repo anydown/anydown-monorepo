@@ -380,15 +380,17 @@ export default {
       this.createArrowPos.y2 = y;
     },
     upArrow(ev) {
-      this.items.push({
-        type: "arrow-end",
-        x1: round(this.createArrowPos.x1),
-        x2: round(this.createArrowPos.x2),
-        y1: round(this.createArrowPos.y1),
-        y2: round(this.createArrowPos.y2),
-      });
-      this.$emit("change", this.stringData);
-
+      // prevent create arrow when zero length arrow
+      if(round(this.createArrowPos.x1) !== round(this.createArrowPos.x2) || round(this.createArrowPos.y1) !== round(this.createArrowPos.y2)){
+        this.items.push({
+          type: "arrow-end",
+          x1: round(this.createArrowPos.x1),
+          x2: round(this.createArrowPos.x2),
+          y1: round(this.createArrowPos.y1),
+          y2: round(this.createArrowPos.y2),
+        });
+        this.$emit("change", this.stringData);
+      }
       this.createArrow = false;
     },
     moveAffectedLines(affected, dx, dy, isStart) {
