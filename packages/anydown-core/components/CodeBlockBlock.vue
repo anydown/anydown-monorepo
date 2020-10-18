@@ -488,16 +488,17 @@ export default {
           item.y2 = round(svgOffset.y - this.dragOffset.y);
         }
 
+        // resize handle
         if (type.indexOf("l") >= 0) {
-          const dx = svgOffset.x - this.dragOffset.x + handleSize;
+          const dx = round(svgOffset.x - this.dragOffset.x + handleSize);
           const px = item.x - dx;
-          item.x = round(dx);
+          item.x = dx;
           item.width = round(item.width + px);
         }
         if (type.indexOf("t") >= 0) {
-          const dy = svgOffset.y - this.dragOffset.y + handleSize;
+          const dy = round(svgOffset.y - this.dragOffset.y + handleSize);
           const py = item.y - dy;
-          item.y = round(dy);
+          item.y = dy;
           item.height = round(item.height + py);
         }
         if (type.indexOf("d") >= 0) {
