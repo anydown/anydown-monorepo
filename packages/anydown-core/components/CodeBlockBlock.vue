@@ -9,6 +9,7 @@
       @blur="editorBlur"
       @keydown="globalKeydown"
       @click="cancelSelection"
+      @dblclick="addBlockAt"
     >
       <defs>
         <filter id="dropshadow" x="0" y="0" width="200%" height="200%">
@@ -529,6 +530,22 @@ export default {
       this.dragOffset.x = x;
       this.dragOffset.y = y;
       this.dragging = true;
+    },
+    addBlockAt(ev){
+      // doubleclick to add new item
+      if (ev.target === this.$refs.canv) {
+        const offset = this.getSvgOffset(ev)
+        this.items.push({
+          type: "box",
+          x: offset.x,
+          y: offset.y,
+          width: 200,
+          height: 100,
+          text: "item"
+        });
+        this.selectedIndex = this.items.length - 1;
+        this.changeBoxText(this.selectedIndex)
+      }
     },
     addBlock() {
       let px = 10;
