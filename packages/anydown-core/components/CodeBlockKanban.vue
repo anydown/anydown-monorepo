@@ -27,6 +27,7 @@
         @click.exact="addSelectionCol(colIndex, false)"
         @click.ctrl="addSelectionCol(colIndex, true)"
         :class="{selected: isSelectedCol(colIndex)}"
+        @dblclick="addTaskByDblclick(colIndex, $event)"
       >
         <div class="kanban__col__add" @click="addTask(colIndex)">
           <svg style="cursor: pointer;" width="20" height="20">
@@ -315,6 +316,12 @@ export default {
     addTask(col) {
       this.compiled[col].cards.push("");
       this.startEditing(col, this.compiled[col].cards.length - 1);
+    },
+    addTaskByDblclick(col, ev) {
+      // because of we use vue-draggable
+      if (ev.target.classList.contains("draggable--max")) {
+        this.addTask(col);
+      }
     },
     removeTask(col, row) {
       const oldData = this.compiled[col].cards[row];
