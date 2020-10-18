@@ -64,7 +64,6 @@
             @pointerdown="downHandle($event, item, 'x')"
             @pointerup="upHandle"
             @pointermove="moveHandle($event, item, 'x')"
-            @click.stop
             fill="rgba(255,255,255,0)"
             x="0.5"
             y="0.5"
@@ -92,7 +91,6 @@
           @pointerup="upHandle"
           @pointermove="moveHandle($event, item, '-')"
           @dblclick="changeArrowText(idx)"
-          @click.stop
         >
           <line
             :x1="item.x1"
@@ -350,8 +348,10 @@ export default {
     input: String,
   },
   methods: {
-    cancelSelection(){
-      this.selectedIndex = -1;
+    cancelSelection(ev) {
+      if(ev.target === this.$refs.canv){
+        this.selectedIndex = -1;
+      }
     },
     selectItem(idx) {
       if (this.editing >= 0) {

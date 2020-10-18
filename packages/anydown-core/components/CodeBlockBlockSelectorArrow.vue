@@ -34,8 +34,8 @@ export default {
     },
     onClickLine() {
       this.$emit("line");
-    },
-  },
+    }
+  }
 };
 </script>
 
