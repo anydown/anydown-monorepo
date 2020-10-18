@@ -146,11 +146,17 @@
           :width="svgWidth"
           height="32"
         />
+        <g v-for="(task, index) in tasks" :key="index">
+          <g @click="moveTo(task)" v-if="(scale(task.start) + 4) <= 0" :transform="`translate(${6}, ${index * 32 + 16 })`">
+            <polyline points="5 -3 0 0 5 3" stroke="#000" stroke-width=1.5 fill="none" />
+            <polyline points="5 -3 0 0 5 3" stroke="white" stroke-width=8 fill="none" opacity=0 />
+          </g>
+        </g>
         <text
           v-for="(task, index) in tasks"
           :key="index"
           class="taskname"
-          :x="(scale(task.start) + 4) > 0 ? (scale(task.start) + 4) : 4"
+          :x="(scale(task.start) + 4) > 0 ? (scale(task.start) + 4) : 18"
           :y="index * 32 + 16"
           font-size="12"
           text-anchor="start"
@@ -249,6 +255,10 @@ export default {
     exportPng() {
       // scale 2x
       util.saveSvgAsPng(document, this.$refs.gantt, 2);
+    },
+    moveTo(task){
+      //TODO move to task
+      console.log(this.scale(task.start))
     },
     addTaskAt(ev) {
       if (ev.target.classList.contains("background")) {
@@ -378,12 +388,14 @@ export default {
       );
     },
     scale(epoc) {
+      //epoc to screen
       return scale
         .scaleLinear()
         .domain(this.timeRange)
         .range([0, this.svgWidth])(epoc);
     },
     invert(x) {
+      //screen to epoc
       return scale
         .scaleLinear()
         .domain(this.timeRange)
