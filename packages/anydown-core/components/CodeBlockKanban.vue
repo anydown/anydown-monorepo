@@ -373,6 +373,8 @@ export default {
   text-align: center;
   position: relative;
   border: 1px solid #f5f5f5;
+  display: flex;
+  flex-direction: column;
 }
 .kanban__col.selected {
   box-sizing: border-box;
@@ -450,6 +452,7 @@ export default {
   min-height: 10rem;
   display: flex;
   flex-direction: column;
+  flex: 1;
 }
 
 .addColumnHit {
