@@ -151,6 +151,7 @@ export default {
     },
     onBlur() {
       this.selectedCol = [];
+      this.selectedCards = { col: -1, cards: [] };
     },
     onRemove() {
       for (var i = this.selectedCol.length; i > 0; i--) {
@@ -307,9 +308,9 @@ export default {
     endEditingAndNew(col, row) {
       this.endEditing(col, row);
       //for VSCode webview hack, I really want to remove this timeout
-      setTimeout(()=>{
+      setTimeout(() => {
         this.addTask(col);
-      }, 100)
+      }, 100);
     },
     addTask(col) {
       this.compiled[col].cards.push("");
