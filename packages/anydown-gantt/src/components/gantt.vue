@@ -29,6 +29,7 @@
           fill="#eee"
           :width="svgWidth"
           :height="tasks.length * 32"
+          @dblclick="addTaskAt"
         />
 
         <g transform="translate(0, -28)">
@@ -187,9 +188,18 @@
         <g
           :transform="`translate(${svgWidth - 24.5}, 0.5)`"
           @click="addTask"
-          style="cursor: pointer;"
+          class="addTaskButton"
         >
-          <rect fill="white" stroke="#999" x="0" y="0" width="20" height="20" rx="4" ry="4" />
+          <rect
+            class="addTaskButton__bg"
+            stroke="#999"
+            x="0"
+            y="0"
+            width="20"
+            height="20"
+            rx="4"
+            ry="4"
+          />
           <line x1="10" x2="10" y1="5" y2="15" stroke="ForestGreen" />
           <line x1="5" x2="15" y1="10" y2="10" stroke="ForestGreen" />
         </g>
@@ -239,6 +249,20 @@ export default {
     exportPng() {
       // scale 2x
       util.saveSvgAsPng(document, this.$refs.gantt, 2);
+    },
+    addTaskAt(ev) {
+      if (ev.target.classList.contains("background")) {
+        const start = util.resetHMSfromEpoc(this.invert(ev.offsetX));
+        const index = Math.floor((ev.offsetY - 48) / 32);
+
+        this.tasks.splice(index, 0, {
+          name: "New Task",
+          start: start,
+          end: start + 24 * 60 * 60 * 1000
+        });
+        this.$emit("change", gantt.serialize(this.tasks));
+        this.editTask(index);
+      }
     },
     editTask(index) {
       this.editing = index;
@@ -625,5 +649,14 @@ svg.gantt {
 }
 .labelDate {
   pointer-events: none;
+}
+.addTaskButton {
+  cursor: pointer;
+}
+.addTaskButton .addTaskButton__bg {
+  fill: white;
+}
+.addTaskButton:hover .addTaskButton__bg {
+  fill: #eee;
 }
 </style>
