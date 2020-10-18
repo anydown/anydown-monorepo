@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.7.0](https://github.com/anydown/anydown-monorepo/compare/v1.1.8...v1.7.0) (2020-10-18)
+
+
+### Features
+
+* add task by dblclick ([17f4ba8](https://github.com/anydown/anydown-monorepo/commit/17f4ba8ace97e50476e5481894ae9638dafd912d))
+* **block:** add label on arrow ([e24285a](https://github.com/anydown/anydown-monorepo/commit/e24285aab145f3704fe882f0e97afcaf950ccd89))
+* **block:** dblclick to add new item ([ca1ae05](https://github.com/anydown/anydown-monorepo/commit/ca1ae059323543ecba829b6931330543d08c7847))
+* **kanban:** dblclick to add ([346f38b](https://github.com/anydown/anydown-monorepo/commit/346f38b088e73abaa510a761fc41977787caeaf7))
+
+
+### Bug Fixes
+
+* **block:** fix block resizing rounding ([e321990](https://github.com/anydown/anydown-monorepo/commit/e32199027fd63a4a970ad3aedcd7ce3572628d53))
+* **kanban:** drag area height not full ([ffaf434](https://github.com/anydown/anydown-monorepo/commit/ffaf43416aa7dfb066c0bd36d0a83158d619736e))
+* prevent create arrow when zero length arrow ([4ee80db](https://github.com/anydown/anydown-monorepo/commit/4ee80db250728a2de3bd8a2b95c53b61fa1d9d57))
+
 ### [1.6.1](https://github.com/anydown/anydown-monorepo/compare/v1.1.6...v1.6.1) (2020-10-10)
 
 ## 1.6.0 (2020-10-10)
