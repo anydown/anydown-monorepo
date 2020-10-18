@@ -39,6 +39,9 @@ export default {
 .typeNav__item {
   color: white;
 }
+.typeNav__item:hover {
+  color: #eee;
+}
 .typeNav__item.active {
   color: #a4d3ff;
 }

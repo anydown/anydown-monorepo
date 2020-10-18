@@ -292,12 +292,17 @@
       </g>
 
       <!-- タスク追加 -->
-      <g
-        :transform="`translate(${svgWidth - 24.5}, 5.5)`"
-        @click="addBlock"
-        style="cursor: pointer;"
-      >
-        <rect fill="white" stroke="#999" x="0" y="0" width="20" height="20" rx="4" ry="4" />
+      <g :transform="`translate(${svgWidth - 24.5}, 5.5)`" @click="addBlock" class="addTaskButton">
+        <rect
+          class="addTaskButton__bg"
+          stroke="#999"
+          x="0"
+          y="0"
+          width="20"
+          height="20"
+          rx="4"
+          ry="4"
+        />
         <line x1="10" x2="10" y1="5" y2="15" stroke="ForestGreen" />
         <line x1="5" x2="15" y1="10" y2="10" stroke="ForestGreen" />
       </g>
@@ -531,10 +536,10 @@ export default {
       this.dragOffset.y = y;
       this.dragging = true;
     },
-    addBlockAt(ev){
+    addBlockAt(ev) {
       // doubleclick to add new item
       if (ev.target === this.$refs.canv) {
-        const offset = this.getSvgOffset(ev)
+        const offset = this.getSvgOffset(ev);
         this.items.push({
           type: "box",
           x: offset.x,
@@ -544,7 +549,7 @@ export default {
           text: "item"
         });
         this.selectedIndex = this.items.length - 1;
-        this.changeBoxText(this.selectedIndex)
+        this.changeBoxText(this.selectedIndex);
       }
     },
     addBlock() {
@@ -840,14 +845,13 @@ svg {
   flex: 1;
 }
 
-.fade-enter-active {
-  transition: opacity 0.3s;
+.addTaskButton {
+  cursor: pointer;
 }
-.fade-leave-active {
-  transition: opacity 0.1s;
+.addTaskButton .addTaskButton__bg {
+  fill: white;
 }
-.fade-enter,
-.fade-leave-to {
-  opacity: 0;
+.addTaskButton:hover .addTaskButton__bg {
+  fill: #eee;
 }
 </style>

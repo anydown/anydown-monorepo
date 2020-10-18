@@ -43,6 +43,9 @@ export default {
 .typeNav__item {
   color: white;
 }
+.typeNav__item:hover {
+  color: #eee;
+}
 .typeNav__item.active {
   color: #6db9ff;
   opacity: 1;
