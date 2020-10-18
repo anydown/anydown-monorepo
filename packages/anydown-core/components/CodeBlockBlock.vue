@@ -103,18 +103,6 @@
           <line :x1="item.x1" :x2="item.x2" :y1="item.y1" :y2="item.y2" stroke="black" />
           <text v-if="item.text" :x="(item.x1 + item.x2) / 2" :y="(item.y1 + item.y2) / 2"  text-anchor="middle" dominant-baseline="central" stroke-width="8" stroke="#f0f0f0" >{{item.text}}</text>
           <text v-if="item.text" :x="(item.x1 + item.x2) / 2" :y="(item.y1 + item.y2) / 2"  text-anchor="middle" dominant-baseline="central" fill="black">{{item.text}}</text>
-          <foreignObject
-            v-if="editing === idx"
-            width="200"
-            height="32"
-            :x="(item.x1 + item.x2) / 2 - 100"
-            :y="(item.y1 + item.y2) / 2 - 16"
-            style="display: flex;"
-          >
-            <form @submit.prevent="endEditing(idx)" class="arrow-input__wrapper">
-              <input class="arrow-input" v-model="editingText" @blur="endEditing(idx)" />
-            </form>
-          </foreignObject>
           <g
             v-if="item.type === 'arrow-end' || item.type === 'arrow-both'"
             style="pointer-events: none;"
@@ -130,6 +118,18 @@
           >
             <polygon points="0,0 -20,-8 -18,0 -20,8" fill="black" />
           </g>
+          <foreignObject
+            v-if="editing === idx"
+            width="200"
+            height="32"
+            :x="(item.x1 + item.x2) / 2 - 100"
+            :y="(item.y1 + item.y2) / 2 - 16"
+            style="display: flex;"
+          >
+            <form @submit.prevent="endEditing(idx)" class="arrow-input__wrapper">
+              <input class="arrow-input" v-model="editingText" @blur="endEditing(idx)" />
+            </form>
+          </foreignObject>
         </g>
       </g>
 
