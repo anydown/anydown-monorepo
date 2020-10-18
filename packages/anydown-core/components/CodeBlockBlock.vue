@@ -737,7 +737,6 @@ export default {
   },
   mounted() {
     window.addEventListener("resize", () => {
-      console.log("resize", this.$el.clientWidth);
       this.svgWidth = this.$el.clientWidth;
     });
     this.svgWidth = this.$el.clientWidth;
