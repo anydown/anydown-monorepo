@@ -8,6 +8,7 @@
       @focus="editorFocus"
       @blur="editorBlur"
       @keydown="globalKeydown"
+      @click="cancelSelection"
     >
       <defs>
         <filter id="dropshadow" x="0" y="0" width="200%" height="200%">
@@ -63,6 +64,7 @@
             @pointerdown="downHandle($event, item, 'x')"
             @pointerup="upHandle"
             @pointermove="moveHandle($event, item, 'x')"
+            @click.stop
             fill="rgba(255,255,255,0)"
             x="0.5"
             y="0.5"
@@ -83,11 +85,14 @@
           </foreignObject>
         </g>
 
+        <!-- Arrow -->
         <g
           v-if="item.type === 'arrow-start' || item.type === 'arrow-end' || item.type === 'arrow-both' || item.type === 'line'"
           @pointerdown="downHandle($event, item, '-')"
           @pointerup="upHandle"
           @pointermove="moveHandle($event, item, '-')"
+          @dblclick="changeArrowText(idx)"
+          @click.stop
         >
           <line
             :x1="item.x1"
@@ -98,6 +103,20 @@
             stroke-width="10"
           />
           <line :x1="item.x1" :x2="item.x2" :y1="item.y1" :y2="item.y2" stroke="black" />
+          <text v-if="item.text" :x="(item.x1 + item.x2) / 2" :y="(item.y1 + item.y2) / 2"  text-anchor="middle" dominant-baseline="central" stroke-width="8" stroke="#f0f0f0" >{{item.text}}</text>
+          <text v-if="item.text" :x="(item.x1 + item.x2) / 2" :y="(item.y1 + item.y2) / 2"  text-anchor="middle" dominant-baseline="central" fill="black">{{item.text}}</text>
+          <foreignObject
+            v-if="editing === idx"
+            width="200"
+            height="32"
+            :x="(item.x1 + item.x2) / 2 - 100"
+            :y="(item.y1 + item.y2) / 2 - 16"
+            style="display: flex;"
+          >
+            <form @submit.prevent="endEditing(idx)" class="arrow-input__wrapper">
+              <input class="arrow-input" v-model="editingText" @blur="endEditing(idx)" />
+            </form>
+          </foreignObject>
           <g
             v-if="item.type === 'arrow-end' || item.type === 'arrow-both'"
             style="pointer-events: none;"
@@ -331,6 +350,9 @@ export default {
     input: String,
   },
   methods: {
+    cancelSelection(){
+      this.selectedIndex = -1;
+    },
     selectItem(idx) {
       if (this.editing >= 0) {
         return;
@@ -506,6 +528,17 @@ export default {
       });
       this.selectedIndex = this.items.length - 1;
       this.$emit("change", this.stringData);
+    },
+    changeArrowText(idx) {
+      this.editingText = this.items[idx].text;
+      this.editing = idx;
+      this.$nextTick(() => {
+        const el = this.$el.querySelector(".arrow-input");
+        if (el) {
+          el.focus();
+          el.setSelectionRange(0, el.value.length);
+        }
+      });
     },
     changeBoxText(idx) {
       const text = this.items[idx].text;
@@ -759,6 +792,16 @@ svg {
   height: 100%;
   margin: 0;
   display: flex;
+  flex: 1;
+}
+
+.arrow-input__wrapper{
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex: 1;
+}
+.arrow-input{
   flex: 1;
 }
 
