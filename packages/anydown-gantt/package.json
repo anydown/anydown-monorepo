@@ -15,10 +15,8 @@
   },
   "scripts": {
     "dev": "vite",
-    "example:serve": "poi --serve",
     "prepublishOnly": "vite build",
-    "build": "bili",
-    "example:build": "poi"
+    "build:example": "vite build --config vite.example.config.js"
   },
   "files": [
     "dist"
