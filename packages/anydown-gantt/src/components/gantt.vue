@@ -214,7 +214,7 @@
 
     <div class="navBottom">
       <label class="navBottom__label">
-        <input type="checkbox" v-model="longView" />Long
+        <input type="checkbox" v-model="longView" @change.stop />Long
       </label>
       <button class="navBottom__button" @click="exportPng">Export</button>
     </div>
